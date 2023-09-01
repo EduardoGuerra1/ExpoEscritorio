@@ -236,33 +236,7 @@ private void enviarDatosHaciaApi() {
         }
     }
     private void btnRestablecerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRestablecerActionPerformed
-       if(txtCodigo.getText().equals(Code))
-        {
-            String PASSEN = encryptPassword(txtContraseña.getText());
-        
-
-          String jsonInputString = "{\"idPersona\": " + idPersona + ", \"claveCredenciales\": \"" + PASSEN + "\"}";
-
-
-        String endpointUrl = "https://expo2023-6f28ab340676.herokuapp.com/Credenciales/Contra";
-
-        CompletableFuture<Boolean> result = putApiAsync(endpointUrl, jsonInputString);
-        
-        result.thenAccept(response -> {
-            if (response) {
-                
-                 System.out.println("La solicitud HTTP Post exitosa.");
-            } else {
-                 
-             System.out.println("La solicitud HTTP put no fue exitosa.");
-            }
-        }).join();
-
-             CompletableFuture<List<TiposPersonas>> encargadosFuture = getTiposPersonasApiAsync();
-        }
-        else{
-            System.out.println(" no se que paso ");
-        }
+      
     }//GEN-LAST:event_btnRestablecerActionPerformed
 
     private void btnRestablecerMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRestablecerMouseClicked
@@ -280,7 +254,7 @@ private void enviarDatosHaciaApi() {
         
         result.thenAccept(response -> {
             if (response) {
-                
+                  Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "Se cambio correctamente la contraseña ");
                  System.out.println("La solicitud HTTP Post exitosa.");
             } else {
                  
