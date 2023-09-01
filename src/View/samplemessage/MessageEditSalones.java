@@ -46,7 +46,7 @@ import raven.toast.Notifications;
 public class MessageEditSalones extends javax.swing.JPanel {
 
     public int id;
-
+    private Boolean noti;
     public MessageEditSalones() {
 
         initComponents();
@@ -64,8 +64,8 @@ public class MessageEditSalones extends javax.swing.JPanel {
                 }
                 for (char c : str.toCharArray()) {
                     if (!Character.isLetterOrDigit(c) && !Character.isWhitespace(c) && c != '.') {
-                        Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "El campo solo permite números y letras");
-
+                        //Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "El campo solo permite números y letras");
+                        noti=true;
                         return; // Ignora el carácter si no es letra, número, espacio o punto
                     }
                 }
@@ -120,6 +120,11 @@ public class MessageEditSalones extends javax.swing.JPanel {
         add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 90, -1, -1));
         jLabel2.getAccessibleContext().setAccessibleName("Codigo de Salon:");
 
+        txtTipoCodigo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtTipoCodigoKeyReleased(evt);
+            }
+        });
         add(txtTipoCodigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 120, 400, 50));
     }// </editor-fold>//GEN-END:initComponents
 
@@ -131,9 +136,9 @@ public class MessageEditSalones extends javax.swing.JPanel {
         // TODO add your handling code here:
 
        Validaciones valida = new Validaciones();
-        if (txtTipoCodigo.getText().isEmpty()) {
+        if (txtTipoCodigo.getText().isEmpty() ) {
             Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "El campo no puede estar vacío");
-        } else {
+        }else {
             if (!valida.check6(txtTipoCodigo.getText()) ) {
                 Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "El Campo es muy grande");
             }
@@ -151,6 +156,14 @@ public class MessageEditSalones extends javax.swing.JPanel {
 
 
     }//GEN-LAST:event_btnAceptarMouseClicked
+
+    private void txtTipoCodigoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTipoCodigoKeyReleased
+        // TODO add your handling code here:
+        
+         if(noti==true){
+            Notifications.getInstance().show(Notifications.Type.WARNING, Notifications.Location.TOP_CENTER, "El campo solo permite números y letras");
+        }
+    }//GEN-LAST:event_txtTipoCodigoKeyReleased
 
     public void eventOK(ActionListener event) {
         btnAceptar.addActionListener(event);
