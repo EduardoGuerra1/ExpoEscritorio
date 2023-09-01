@@ -11,4 +11,8 @@ public class Secciones {
         this.seccion = seccion;
     }
 
+    public Secciones(){
+        
+    }
+    
 }
