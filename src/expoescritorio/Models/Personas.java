@@ -16,8 +16,8 @@ public class Personas {
     private int idTipoPersona;
     private String correo;
     private String claveCredenciales;
-    private String foto;
-    public Personas(int idPersona, String codigo, String nombrePersona, String apellidoPersona, String nacimientoPersona, int idTipoPersona, String correo, String claveCredenciales, String foto) {
+    private byte[] foto;
+    public Personas(int idPersona, String codigo, String nombrePersona, String apellidoPersona, String nacimientoPersona, int idTipoPersona, String correo, String claveCredenciales, byte[] foto) {
         this.idPersona = idPersona;
         this.codigo = codigo;
         this.nombrePersona = nombrePersona;
@@ -27,6 +27,10 @@ public class Personas {
         this.correo = correo;
         this.claveCredenciales = claveCredenciales;
         this.foto = foto;
+    }
+    
+    public Personas(){
+        
     }
     
     
