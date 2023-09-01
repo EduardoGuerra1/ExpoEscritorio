@@ -53,12 +53,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  *
@@ -262,7 +267,7 @@ public class MessageAddPersonas extends javax.swing.JPanel {
     private void btnAceptarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAceptarMouseClicked
         // TODO add your handling code here:
 
-        if (txtNombres.getText().isEmpty() || txtApellidos.getText().isEmpty() || txtCodigo.getText().isEmpty() || rute.isEmpty()) {
+        if (txtNombres.getText().isEmpty() || txtApellidos.getText().isEmpty() || txtCodigo.getText().isEmpty()) {
             Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "Los campos no puede estar vacío");
         }  else {
             try {
@@ -359,22 +364,30 @@ public class MessageAddPersonas extends javax.swing.JPanel {
         try{
             JSONObject jsonData = new JSONObject();
             
-            File imageFile = new File(rute);
-            FileInputStream fileInputStream = new FileInputStream(imageFile);
-
-            // Read the image file and encode it to Base64
-            byte[] imageBytes = new byte[(int) imageFile.length()];
-            fileInputStream.read(imageBytes);
-            String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+            Path fotoPath;
+            byte[] imageBytes;
+            String base64Image="";
+            
+            if(!rute.isEmpty()){
+                fotoPath = Paths.get(rute);
+                // Read the image file and encode it to Base64
+                imageBytes = Files.readAllBytes(fotoPath);
+                base64Image = Base64.getEncoder().encodeToString(imageBytes);
+            }
+            
+            Date selectedDate = dpNacimiento.getDate(); // Obtiene la fecha seleccionada como un objeto Date
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String formattedDate = dateFormat.format(selectedDate);
             
             jsonData.put("codigo", txtCodigo.getText());
             jsonData.put("nombrePersona", txtNombres.getText());
             jsonData.put("apellidoPersona", txtApellidos.getText());
-            jsonData.put("nacimientoPersona", dpNacimiento.getDate().toString());
+            jsonData.put("nacimientoPersona", formattedDate);
             jsonData.put("idTipoPersona", secciones.get(cbTipoUsuario.getSelectedIndex()).getIdTipoPersona());
             jsonData.put("correo",txtCodigo.getText()+"@ricaldone.edu.sv");
             jsonData.put("claveCredenciales", Encriptacion.encryptPassword(txtClave.getText()));
-            jsonData.put("foto", base64Image);
+            if(rute == "") jsonData.put("foto", JSONObject.NULL);
+            else jsonData.put("foto", base64Image);
             
             String endpointUrl = "https://expo2023-6f28ab340676.herokuapp.com/Credenciales/save"; // Reemplaza esto con la URL de tu API
             String jsonString = jsonData.toString();
@@ -402,8 +415,9 @@ public class MessageAddPersonas extends javax.swing.JPanel {
             });
             
         }
-        catch (JSONException e) {
+        catch (Exception e) {
             // Manejar la excepción JSONException aquí
+            e.printStackTrace();
             System.out.println("Error al crear el objeto JSON: " + e.getMessage());
         }
         
