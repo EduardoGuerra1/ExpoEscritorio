@@ -1,7 +1,11 @@
 package expoescritorio.Controller;
 
 
+import com.google.gson.Gson;
+import static expoescritorio.Controller.PersonasController.encryptPassword;
+import expoescritorio.Models.Grados;
 import expoescritorio.Models.GradosView;
+import expoescritorio.Models.Personas;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,11 +16,117 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class GradosController {
-    public static CompletableFuture<List<GradosView>> getGradosApiAsync() {
+    
+    private static String addQueryParameters(String baseUrl, Map<String, String> params) {
+        StringBuilder builder = new StringBuilder(baseUrl);
+
+        if (!params.isEmpty()) {
+            builder.append("?");
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                builder.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+            }
+            builder.deleteCharAt(builder.length() - 1); // Elimina el último "&"
+        }
+
+        return builder.toString();
+    }
+    
+    public static Grados getGradoAcademico(int idNivelAcademico, int idSeccion, int idSeccionBachillerato) {
+        
+        String baseUrl = "https://expo2023-6f28ab340676.herokuapp.com/Grados/gradoAcademico";
+
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put("idNivelAcademico", String.valueOf(idNivelAcademico));
+        queryParams.put("idSeccion", String.valueOf(idSeccion));
+        queryParams.put("idSeccionBachillerato", String.valueOf(idSeccionBachillerato));
+
+        String url = addQueryParameters(baseUrl, queryParams);
+
+        try {
+            URL urlObject = new URL(url);
+            HttpURLConnection connection = (HttpURLConnection) urlObject.openConnection();
+            connection.setRequestMethod("GET");
+
+            int responseCode = connection.getResponseCode();
+
+            if (responseCode == 200) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String inputLine;
+                StringBuilder response = new StringBuilder();
+
+                while ((inputLine = reader.readLine()) != null) {
+                    response.append(inputLine);
+                }
+
+                reader.close();
+
+                String responseData = response.toString();
+                if (responseData != null) {
+                    Gson gson = new Gson();
+                    return gson.fromJson(responseData, Grados.class);
+                }
+            } else {
+                System.out.println("No se encontro: " + responseCode);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null; // Si hay algún problema, retorna null
+    }
+    
+    public static Grados getGradoTecnico(int idEspecialidad, int idGrupoTecnico) {
+        
+        String baseUrl = "https://expo2023-6f28ab340676.herokuapp.com/Grados/gradoTecnico";
+
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put("idEspecialidad", String.valueOf(idEspecialidad));
+        queryParams.put("idGrupoTecnico", String.valueOf(idGrupoTecnico));
+
+        String url = addQueryParameters(baseUrl, queryParams);
+
+        try {
+            URL urlObject = new URL(url);
+            HttpURLConnection connection = (HttpURLConnection) urlObject.openConnection();
+            connection.setRequestMethod("GET");
+
+            int responseCode = connection.getResponseCode();
+
+            if (responseCode == 200) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String inputLine;
+                StringBuilder response = new StringBuilder();
+
+                while ((inputLine = reader.readLine()) != null) {
+                    response.append(inputLine);
+                }
+
+                reader.close();
+
+                String responseData = response.toString();
+                if (responseData != null) {
+                    Gson gson = new Gson();
+                    return gson.fromJson(responseData, Grados.class);
+                }
+            } else {
+                System.out.println("No se encontro: " + responseCode);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null; // Si hay algún problema, retorna null
+    }
+    
+    /*public static CompletableFuture<List<GradosView>> getGradosApiAsync() {
         return CompletableFuture.supplyAsync(() -> {
             String apiUrl = "https://expo2023-6f28ab340676.herokuapp.com/Grados/list";
             List<GradosView> modelList = new ArrayList<>();
@@ -54,6 +164,6 @@ public class GradosController {
             }
             return modelList;
         });
-    }
+    }*/
 
 }
