@@ -48,4 +48,40 @@ public class SeccionesController {
             return modelList;
         });
     }
+    
+    public static CompletableFuture<Secciones> getSeccionesbyNameApiAsync(String seccionName) {
+        return CompletableFuture.supplyAsync(() -> {
+            String apiUrl = "https://expo2023-6f28ab340676.herokuapp.com/Secciones/get/"+seccionName;
+            Secciones modelList = new Secciones();
+            HttpURLConnection connection = null;
+            try {
+                URL url = new URL(apiUrl);
+                connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                int responseCode = connection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    JSONArray jsonArray = new JSONArray(reader.readLine());
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        int idSeccion = jsonObject.getInt("idSeccion");
+                        String seccion = jsonObject.getString("seccion");
+                        Secciones newSeccion = new Secciones(idSeccion, seccion);
+                        return newSeccion;
+                    }
+                } else {
+                    System.out.println("La solicitud HTTP no fue exitosa. Código de estado: " + responseCode);
+                }
+            } catch (IOException | JSONException e) {
+                System.out.println("Error al realizar la solicitud HTTP: " + e.getMessage());
+            } finally {
+                if (connection != null) {
+                    connection.disconnect(); // Cerrar la conexión
+                }
+            }
+
+            return modelList;
+        });
+    }
 }
