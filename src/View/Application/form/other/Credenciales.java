@@ -7,7 +7,10 @@ package View.Application.form.other;
 import View.glasspanepopup.GlassPanePopup;
 import View.samplemessage.Message;
 import View.samplemessage.MessageAddCodigosDisciplinarios;
+import View.samplemessage.MessageAddPersonas;
 import View.samplemessage.MessageEditCodigosDisciplinarios;
+import View.samplemessage.MessageEditEstudiante;
+import View.samplemessage.MessageEditPersonas;
 import com.formdev.flatlaf.FlatClientProperties;
 import expoescritorio.Controller.CodigosConductualesController;
 import expoescritorio.Controller.ControllerFull;
@@ -19,6 +22,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import javax.swing.JComboBox;
@@ -34,8 +38,11 @@ import org.json.JSONObject;
  * @author gyaci
  */
 public class Credenciales extends javax.swing.JPanel {
-
+    
+    
+    
     PersonasController controller = new PersonasController();
+    List<Personas> myPersonas = new ArrayList<Personas>();
 
     /**
      * Creates new form CodigosDisciplinarios
@@ -46,22 +53,22 @@ public class Credenciales extends javax.swing.JPanel {
         lb.putClientProperty(FlatClientProperties.STYLE, ""
                 + "font:$h1.font");
         // Obtén el modelo de la tabla existente
-        DefaultTableModel tableModel = (DefaultTableModel) table1.getModel();
+        DefaultTableModel tableModel = (DefaultTableModel) table2.getModel();
 
         // Establece los "ColumnIdentifiers" en el modelo de la tabla
         tableModel.setColumnIdentifiers(new Object[]{"Codigo", "Nombre", "Tipo Persona", "email"});
 
         cargarDatos();
 
-        table1.setDefaultEditor(Object.class, null);
+        table2.setDefaultEditor(Object.class, null);
     }
 
     public void cargarDatos() {
         CompletableFuture<List<Personas>> future = PersonasController.getNoPersonasAsync(2);
         future.thenAccept(personas -> {
-            DefaultTableModel tableModel = (DefaultTableModel) table1.getModel();
+            DefaultTableModel tableModel = (DefaultTableModel) table2.getModel();
             
-            
+            myPersonas.clear();
             
             for (Personas persona : personas) {
                 tableModel.addRow(new Object[]{
@@ -70,6 +77,7 @@ public class Credenciales extends javax.swing.JPanel {
                     TiposPersonasController.getTipoPersonaAsync(persona.getIdTipoPersona()),
                     persona.getCorreo()
                 });
+                myPersonas.add(persona);
             }
         });
     }
@@ -180,6 +188,11 @@ public class Credenciales extends javax.swing.JPanel {
                 btnAdd1MouseClicked(evt);
             }
         });
+        btnAdd1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAdd1ActionPerformed(evt);
+            }
+        });
 
         btnEdit1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/View/icons/edit.png"))); // NOI18N
         btnEdit1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -187,11 +200,21 @@ public class Credenciales extends javax.swing.JPanel {
                 btnEdit1MouseClicked(evt);
             }
         });
+        btnEdit1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEdit1ActionPerformed(evt);
+            }
+        });
 
         btnDelete1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/View/icons/delete.png"))); // NOI18N
         btnDelete1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnDelete1MouseClicked(evt);
+            }
+        });
+        btnDelete1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDelete1ActionPerformed(evt);
             }
         });
 
@@ -425,44 +448,7 @@ public class Credenciales extends javax.swing.JPanel {
     }//GEN-LAST:event_btnEditMouseClicked
 
     private void btnAddMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddMouseClicked
- /*       // TODO add your handling code here:
-        MessageAddCodigosDisciplinarios obj = new MessageAddCodigosDisciplinarios();
-        obj.txtTitle.setText("Añadir Estudiante");
-        obj.eventOK(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                System.out.println("Click OK");
-                CompletableFuture<List<CodigosConductuales>> future = controller.getCodigosConductualesApiAsync();
-                future.thenAccept(codigosConductuales -> {
-                    deleteAllTableRows(table1);
-                    DefaultTableModel tableModel = (DefaultTableModel) table1.getModel();
-                    for (CodigosConductuales codigo : codigosConductuales) {
-                        tableModel.addRow(new Object[]{
-                            codigo.getIdCodigoConductual(),
-                            codigo.getIdTipoCodigoConductual(),
-                            codigo.getIdNivelCodigoConductual(),
-                            codigo.getCodigoConductual()
-                        });
-                    }
-                });
-                GlassPanePopup.closePopupLast();
-                Timer timer = new Timer(500, (ActionEvent e) -> {
-                    deleteAllTableRows(table1);
-                    cargarDatos();
-                });
-                timer.setRepeats(false);
-                timer.start();
-            }
-        });
-        GlassPanePopup.showPopup(obj);
 
-        Timer timer = new Timer(500, (ActionEvent e) -> {
-            deleteAllTableRows(table1);
-            cargarDatos();
-        });
-        timer.setRepeats(false);
-        timer.start();
-*/
     }//GEN-LAST:event_btnAddMouseClicked
 
     private void btnAdd1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAdd1MouseClicked
@@ -476,6 +462,153 @@ public class Credenciales extends javax.swing.JPanel {
     private void btnDelete1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDelete1MouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_btnDelete1MouseClicked
+
+    private void btnAdd1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdd1ActionPerformed
+        // TODO add your handling code here:
+        MessageAddPersonas obj = new MessageAddPersonas();
+        obj.txtTitle.setText("Añadir Estudiante");
+        obj.eventOK(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                System.out.println("Click OK");
+                cargarDatos();
+                GlassPanePopup.closePopupLast();
+                Timer timer = new Timer(500, (ActionEvent e) -> {
+                    deleteAllTableRows(table2);
+                    cargarDatos();
+                });
+                timer.setRepeats(false);
+                timer.start();
+            }
+        });
+        GlassPanePopup.showPopup(obj);
+
+        Timer timer = new Timer(500, (ActionEvent e) -> {
+            deleteAllTableRows(table2);
+            cargarDatos();
+        });
+        timer.setRepeats(false);
+        timer.start();
+    }//GEN-LAST:event_btnAdd1ActionPerformed
+
+    private void btnDelete1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelete1ActionPerformed
+        // TODO add your handling code here:
+        int selectedRow = table2.getSelectedRow();
+
+        // Verificar si se ha seleccionado una fila
+        if (selectedRow != -1) {
+            // Obtener los datos de las columnas de la fila seleccionada
+            Object id = table2.getValueAt(selectedRow, 0);
+
+            Message obj = new Message();
+            obj.txtTitle.setText("Aviso");
+            obj.txtContent.setText("¿Desea eliminar este registro?");
+            obj.eventOK(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    CompletableFuture<Boolean> deleteFuture = PersonasController.deleteCodigoPersona(id.toString());
+
+                    // Manejar la respuesta de la API
+                    deleteFuture.thenAccept(deleted -> {
+                        if (deleted) {
+                            // Registro eliminado con éxito
+                            Message obj = new Message();
+                            obj.txtTitle.setText("Aviso");
+                            obj.txtContent.setText("Persona eliminada exitosamente");
+                            obj.eventOK(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent ae) {
+                                    deleteAllTableRows(table2);
+                                    cargarDatos();
+                                    GlassPanePopup.closePopupLast();
+                                }
+                            });
+                            GlassPanePopup.showPopup(obj);
+                        } else {
+                            // Ocurrió un error al eliminar el registro
+                            Message obj = new Message();
+                            obj.txtTitle.setText("Aviso");
+                            obj.txtContent.setText("Error al eliminar la persona, intente nuevamente.");
+                            obj.eventOK(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent ae) {
+
+                                    GlassPanePopup.closePopupLast();
+                                }
+                            });
+                            GlassPanePopup.showPopup(obj);
+                        }
+                    });
+
+                    GlassPanePopup.closePopupLast();
+                }
+            });
+            GlassPanePopup.showPopup(obj);
+
+        } else {
+            Message obj = new Message();
+            obj.txtTitle.setText("Aviso");
+            obj.txtContent.setText("Debe seleccionar una fila.");
+            obj.eventOK(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    System.out.println("Click OK");
+                    GlassPanePopup.closePopupLast();
+                }
+            });
+            GlassPanePopup.showPopup(obj);
+
+        }
+    }//GEN-LAST:event_btnDelete1ActionPerformed
+
+    private void btnEdit1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEdit1ActionPerformed
+        // TODO add your handling code here:
+        int indx = table2.getSelectedRow();
+        if(indx==-1){
+            Message obj = new Message();
+            obj.txtTitle.setText("Aviso");
+            obj.txtContent.setText("Debe seleccionar una fila.");
+            obj.eventOK(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    System.out.println("Click OK");
+                    GlassPanePopup.closePopupLast();
+                }
+            });
+            GlassPanePopup.showPopup(obj);
+        }
+        else{
+            try{
+                MessageEditPersonas obj = new MessageEditPersonas(myPersonas.get(indx));
+                
+                obj.txtTitle.setText("Actualizar Estudiante");
+                obj.eventOK(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                        System.out.println("Click OK");
+                        GlassPanePopup.closePopupLast();
+                        Timer timer = new Timer(2000, (ActionEvent e) -> {
+                            deleteAllTableRows(table2);
+                            cargarDatos();
+                        });
+                        timer.setRepeats(false);
+                        timer.start();
+                    }
+                });
+                GlassPanePopup.showPopup(obj);
+
+                Timer timer = new Timer(2000, (ActionEvent e) -> {
+                    deleteAllTableRows(table2);
+                    cargarDatos();
+                });
+                timer.setRepeats(false);
+                timer.start();
+            }
+            catch(Exception e){
+                System.out.println(e.getMessage());
+            }
+        }
+    }//GEN-LAST:event_btnEdit1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -493,6 +626,6 @@ public class Credenciales extends javax.swing.JPanel {
     private javax.swing.JLabel lb;
     private javax.swing.JLabel lb1;
     public View.ExampleTable.Table table1;
-    public View.ExampleTable.Table table2;
+    private View.ExampleTable.Table table2;
     // End of variables declaration//GEN-END:variables
 }

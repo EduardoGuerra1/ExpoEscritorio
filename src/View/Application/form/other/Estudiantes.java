@@ -7,7 +7,9 @@ package View.Application.form.other;
 import View.glasspanepopup.GlassPanePopup;
 import View.samplemessage.Message;
 import View.samplemessage.MessageAddCodigosDisciplinarios;
+import View.samplemessage.MessageAddEstudiante;
 import View.samplemessage.MessageEditCodigosDisciplinarios;
+import View.samplemessage.MessageEditEstudiante;
 import com.formdev.flatlaf.FlatClientProperties;
 import expoescritorio.Controller.CodigosConductualesController;
 import expoescritorio.Controller.ControllerFull;
@@ -18,6 +20,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import javax.swing.JComboBox;
@@ -35,7 +38,7 @@ import org.json.JSONObject;
 public class Estudiantes extends javax.swing.JPanel {
 
     PersonasController controller = new PersonasController();
-
+    List<Personas> allPersonas = new ArrayList<Personas>();
     /**
      * Creates new form CodigosDisciplinarios
      */
@@ -56,6 +59,7 @@ public class Estudiantes extends javax.swing.JPanel {
     }
 
     public void cargarDatos() {
+        allPersonas.clear();
         CompletableFuture<List<Personas>> future = PersonasController.getPersonasAsync(2);
         future.thenAccept(personas -> {
             DefaultTableModel tableModel = (DefaultTableModel) table1.getModel();
@@ -69,6 +73,7 @@ public class Estudiantes extends javax.swing.JPanel {
                     PersonasController.getEspecialidadPersona(persona.getIdPersona()).join(),
                     PersonasController.getGradoPersona(persona.getIdPersona()).join()
                 });
+                allPersonas.add(persona);
             }
         });
     }
@@ -78,6 +83,7 @@ public class Estudiantes extends javax.swing.JPanel {
         while (model.getRowCount() > 0) {
             model.removeRow(0);
         }
+        table.setModel(model);
     }
 
     @SuppressWarnings("unchecked")
@@ -108,11 +114,21 @@ public class Estudiantes extends javax.swing.JPanel {
                 btnAddMouseClicked(evt);
             }
         });
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
 
         btnEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/View/icons/edit.png"))); // NOI18N
         btnEdit.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnEditMouseClicked(evt);
+            }
+        });
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
             }
         });
 
@@ -228,7 +244,7 @@ public class Estudiantes extends javax.swing.JPanel {
                             GlassPanePopup.showPopup(obj);
                         }
                     });
-
+                    
                     GlassPanePopup.closePopupLast();
                 }
             });
@@ -248,10 +264,56 @@ public class Estudiantes extends javax.swing.JPanel {
             GlassPanePopup.showPopup(obj);
 
         }
+        
     }//GEN-LAST:event_btnDeleteMouseClicked
 
     private void btnEditMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEditMouseClicked
         // TODO add your handling code here:
+        int indx = table1.getSelectedRow();
+        if(indx==-1){
+            Message obj = new Message();
+            obj.txtTitle.setText("Aviso");
+            obj.txtContent.setText("Debe seleccionar una fila.");
+            obj.eventOK(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    System.out.println("Click OK");
+                    GlassPanePopup.closePopupLast();
+                }
+            });
+            GlassPanePopup.showPopup(obj);
+        }
+        else{
+            try{
+                MessageEditEstudiante obj = new MessageEditEstudiante(allPersonas.get(indx));
+                
+                obj.txtTitle.setText("Actualizar Estudiante");
+                obj.eventOK(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                        System.out.println("Click OK");
+                        GlassPanePopup.closePopupLast();
+                        Timer timer = new Timer(2000, (ActionEvent e) -> {
+                            deleteAllTableRows(table1);
+                            cargarDatos();
+                        });
+                        timer.setRepeats(false);
+                        timer.start();
+                    }
+                });
+                GlassPanePopup.showPopup(obj);
+
+                Timer timer = new Timer(2000, (ActionEvent e) -> {
+                    deleteAllTableRows(table1);
+                    cargarDatos();
+                });
+                timer.setRepeats(false);
+                timer.start();
+            }
+            catch(Exception e){
+                System.out.println(e.getMessage());
+            }
+        }
 /*
         int num = 4;
         int num1 = 1;
@@ -320,26 +382,14 @@ public class Estudiantes extends javax.swing.JPanel {
     }//GEN-LAST:event_btnEditMouseClicked
 
     private void btnAddMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddMouseClicked
- /*       // TODO add your handling code here:
-        MessageAddCodigosDisciplinarios obj = new MessageAddCodigosDisciplinarios();
+        // TODO add your handling code here:
+        MessageAddEstudiante obj = new MessageAddEstudiante();
         obj.txtTitle.setText("Añadir Estudiante");
         obj.eventOK(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 System.out.println("Click OK");
-                CompletableFuture<List<CodigosConductuales>> future = controller.getCodigosConductualesApiAsync();
-                future.thenAccept(codigosConductuales -> {
-                    deleteAllTableRows(table1);
-                    DefaultTableModel tableModel = (DefaultTableModel) table1.getModel();
-                    for (CodigosConductuales codigo : codigosConductuales) {
-                        tableModel.addRow(new Object[]{
-                            codigo.getIdCodigoConductual(),
-                            codigo.getIdTipoCodigoConductual(),
-                            codigo.getIdNivelCodigoConductual(),
-                            codigo.getCodigoConductual()
-                        });
-                    }
-                });
+                cargarDatos();
                 GlassPanePopup.closePopupLast();
                 Timer timer = new Timer(500, (ActionEvent e) -> {
                     deleteAllTableRows(table1);
@@ -357,8 +407,19 @@ public class Estudiantes extends javax.swing.JPanel {
         });
         timer.setRepeats(false);
         timer.start();
-*/
+
     }//GEN-LAST:event_btnAddMouseClicked
+
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        // TODO add your handling code here:
+        
+        
+        
+    }//GEN-LAST:event_btnAddActionPerformed
+
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnEditActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

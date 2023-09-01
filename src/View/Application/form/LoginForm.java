@@ -164,7 +164,8 @@ public class LoginForm extends javax.swing.JPanel {
     }//GEN-LAST:event_txtCorreoActionPerformed
 
     private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
-        String Correo = this.txtCorreo.getText();
+        Application.login();
+        /*String Correo = this.txtCorreo.getText();
         String Password = this.txtContraseña.getText();
         Personas personas = PersonasController.callApiAndProcessResponse(Correo, Password);
         int id = personas.getIdTipoPersona();
@@ -200,7 +201,7 @@ public class LoginForm extends javax.swing.JPanel {
             });
             GlassPanePopup.showPopup(obj);
         }
-
+*/
     }//GEN-LAST:event_btnIngresarActionPerformed
 
     private void btnContraseñaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContraseñaActionPerformed

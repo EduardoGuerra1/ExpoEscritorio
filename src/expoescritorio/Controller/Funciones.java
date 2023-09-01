@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import org.json.JSONArray;
@@ -243,7 +244,8 @@ public class Funciones {
                         String idDocenteEncargado= jsonObject.getString("idDocenteEncargado");
                         String idEspecialidad = jsonObject.getString("idEspecialidad");
                         String idGrupoTecnico= jsonObject.getString("idGrupoTecnico");
-                        modelList.add(new GradosView(idGrado, idNivelAcademico, idSeccion,idSeccionBachillerato,idDocenteEncargado,idEspecialidad, idGrupoTecnico));
+                        byte[] horario = Base64.getDecoder().decode(jsonObject.getString("horario")); 
+                        modelList.add(new GradosView(idGrado, idNivelAcademico, idSeccion,idSeccionBachillerato,idDocenteEncargado,idEspecialidad, idGrupoTecnico, horario));
                     }
                 }else {
                     System.out.println("La solicitud HTTP no fue exitosa. Código de estado: " + responseCode);
