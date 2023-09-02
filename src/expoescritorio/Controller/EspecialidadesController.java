@@ -17,16 +17,20 @@ import java.util.concurrent.CompletableFuture;
 public class EspecialidadesController {
     public static CompletableFuture<List<Especialidades>> getEspecialidadesApiAsync() {
         return CompletableFuture.supplyAsync(() -> {
+            // URL del servicio web para obtener una list
             String apiUrl = "https://expo2023-6f28ab340676.herokuapp.com/Especialidades/list";
             List<Especialidades> modelList = new ArrayList<>();
             HttpURLConnection connection = null;
             try {
+                // Se crea una URL a partir de la apiUrl proporcionada.
                 URL url = new URL(apiUrl);
                 connection = (HttpURLConnection) url.openConnection();
+                 // Se configura la solicitud como un método GET.
                 connection.setRequestMethod("GET");
 
                 int responseCode = connection.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
+                    // Procesar la respuesta JSON del servidor.
                     BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     JSONArray jsonArray = new JSONArray(reader.readLine());
 
@@ -37,9 +41,11 @@ public class EspecialidadesController {
                         modelList.add(new Especialidades(idEspecialidad, especialidad));
                     }
                 } else {
+                    // Manejar errores si la respuesta del servidor no es exitosa.
                     System.out.println("La solicitud HTTP no fue exitosa. Código de estado: " + responseCode);
                 }
             } catch (IOException | JSONException e) {
+                // Manejar excepciones si ocurren problemas durante la solicitud HTTP o el procesamiento JSON.
                 System.out.println("Error al realizar la solicitud HTTP: " + e.getMessage());
             } finally {
                 if (connection != null) {

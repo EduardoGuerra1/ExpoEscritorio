@@ -21,11 +21,14 @@ public class CodigosConductualesController {
     
     
     public static CompletableFuture<String> getTipoCodigoConductualAsync(int id){
+         // Se crea un CompletableFuture que contendrá el resultado asincrónico.
         return CompletableFuture.supplyAsync(()->{
+            // URL del servicio web al que se va a realizar la solicitud.
             String apiUrl = "https://expo2023-6f28ab340676.herokuapp.com/TiposCodigosConductuales/get/"+id;
             String model = "";
             HttpURLConnection connection = null; 
             try{
+                // Configura y realiza una solicitud HTTP GET al servidor.
                 URL url = new URL(apiUrl);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
@@ -33,6 +36,7 @@ public class CodigosConductualesController {
                 int responseCode = connection.getResponseCode();
                 
                 if(responseCode == HttpURLConnection.HTTP_OK){
+                    // Lee y almacena la respuesta del servidor si la solicitud fue exitosa.
                     BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     String inputLine;
                     StringBuilder response = new StringBuilder();
@@ -47,10 +51,12 @@ public class CodigosConductualesController {
                     }
                 }
                 else {
+                     // Maneja errores si la respuesta del servidor no es exitosa.
                     System.out.println("La solicitud HTTP no fue exitosa. Código de estado: " + responseCode);
                 }
                 
             }catch (Exception e) {
+                 // Maneja excepciones si ocurren problemas durante la solicitud HTTP.
                 System.out.println("Error al realizar la solicitud HTTP: " + e.getMessage());
             }finally {
                 if (connection != null) {
@@ -63,10 +69,12 @@ public class CodigosConductualesController {
     
     public static CompletableFuture<String> getNivelCodigoConductualAsync(int id){
         return CompletableFuture.supplyAsync(()->{
+             // URL del servicio web al que se va a realizar la solicitud.
             String apiUrl = "https://expo2023-6f28ab340676.herokuapp.com/NivelesCodigosConductuales/get/"+id;
             String model = "";
             HttpURLConnection connection = null; 
             try{
+                // Configura y realiza una solicitud HTTP GET al servidor.
                 URL url = new URL(apiUrl);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
@@ -74,6 +82,7 @@ public class CodigosConductualesController {
                 int responseCode = connection.getResponseCode();
                 
                 if(responseCode == HttpURLConnection.HTTP_OK){
+                    // Lee y almacena la respuesta del servidor si la solicitud fue exitosa.
                     BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     String inputLine;
                     StringBuilder response = new StringBuilder();
@@ -88,10 +97,12 @@ public class CodigosConductualesController {
                     }
                 }
                 else {
+                    // Maneja errores si la respuesta del servidor no es exitosa.
                     System.out.println("La solicitud HTTP no fue exitosa. Código de estado: " + responseCode);
                 }
                 
             }catch (Exception e) {
+                // Maneja excepciones si ocurren problemas durante la solicitud HTTP.
                 System.out.println("Error al realizar la solicitud HTTP: " + e.getMessage());
             }finally {
                 if (connection != null) {
@@ -104,17 +115,19 @@ public class CodigosConductualesController {
     
     public static CompletableFuture<List<CodigosConductuales>> getCodigosConductualesApiAsync() {
         return CompletableFuture.supplyAsync(() -> {
+             // URL del servicio web al que se va a realizar la solicitud.
             String apiUrl = "https://expo2023-6f28ab340676.herokuapp.com/CodigosConductuales/list";
             List<CodigosConductuales> modelList = new ArrayList<>();
             HttpURLConnection connection = null;
             try {
+                // Configura y realiza una solicitud HTTP GET al servidor.
                 URL url = new URL(apiUrl);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
 
                 int responseCode = connection.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
-                    
+                    // Procesar la respuesta JSON del servidor y llenar la lista modelList.
                     BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     JSONArray jsonArray = new JSONArray(reader.readLine());
 
@@ -127,15 +140,18 @@ public class CodigosConductualesController {
                         modelList.add(new CodigosConductuales(idCodigoConductual, idTipoCodigoConductual, idNivelCodigoConductual,codigoConductual));
                     }
                 }else {
+                     // Manejar errores si la respuesta del servidor no es exitosa.
                     System.out.println("La solicitud HTTP no fue exitosa. Código de estado: " + responseCode);
                 }
             }catch (IOException | JSONException e) {
+                 // Manejar excepciones si ocurren problemas durante la solicitud HTTP o el procesamiento JSON.
                 System.out.println("Error al realizar la solicitud HTTP: " + e.getMessage());
             }finally {
                 if (connection != null) {
                     connection.disconnect(); // Cerrar la conexión
                 }
             }
+             // Devolver la lista de objetos CodigosConductuales como un CompletableFuture.
             return modelList;
         });
     }

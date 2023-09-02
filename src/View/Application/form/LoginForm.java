@@ -20,7 +20,7 @@ public class LoginForm extends javax.swing.JPanel {
     private CardLayout cardLayout;
     private JPanel cardPanel;
     private LoginForm loginPanel;
-    private PasswordForm passwordPanel;
+    private Recus  recuperaciones;
 
     public LoginForm() {
         initComponents();

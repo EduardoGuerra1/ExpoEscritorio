@@ -19,27 +19,32 @@ import java.util.concurrent.CompletableFuture;
 public class TiposCodigosConductualesController {
     
     public static Integer getPosicionNivelCodigoConductual(int id){
+        // Obtener la lista
         List<TiposCodigosConductuales> tiposCodigosConductuales = getTiposCodigosConductualesFromApi();
         int cnt = 0;
+        // Iterar a través de la lista de TiposCodigosConductuales.
         for(TiposCodigosConductuales item: tiposCodigosConductuales){
             if(item.getIdTipoCodigoConductual()==id) break;
-            cnt++;
+            cnt++; // Incrementar el contador de posición.
         }
-        return cnt;
+        return cnt;// Devolver la posición del elemento en la lista.
     }
     
     public static CompletableFuture<Integer> getTiposCodigosConductualesNameAsync(String name) {
         return CompletableFuture.supplyAsync(() -> {
+             // URL de la API
             String apiUrl = "https://expo2023-6f28ab340676.herokuapp.com/TiposCodigosConductuales/getName/"+name;
             Integer modelList = 0;
             HttpURLConnection connection = null;
             try {
+                // Se crea un objeto URL a partir de la URL final.
                 URL url = new URL(apiUrl);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
 
                 int responseCode = connection.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
+                    // Leer la respuesta del servidor.
                     BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     String inputLine;
                     StringBuilder response = new StringBuilder();
@@ -53,9 +58,11 @@ public class TiposCodigosConductualesController {
                         modelList = Integer.parseInt(response.toString());
                     }
                 } else {
+                    // Manejar errores si la respuesta del servidor no es exitosa.
                     System.out.println("La solicitud HTTP no fue exitosa. Código de estado: " + responseCode);
                 }
             } catch (Exception e) {
+                 // Manejar excepciones en caso de errores.
                 System.out.println("Error al realizar la solicitud HTTP: " + e.getMessage());
             } finally {
                 if (connection != null) {
@@ -68,16 +75,19 @@ public class TiposCodigosConductualesController {
     
     
     public static List<TiposCodigosConductuales> getTiposCodigosConductualesFromApi() {
+        // URL de la API
         String apiUrl = "https://expo2023-6f28ab340676.herokuapp.com/TiposCodigosConductuales/list";
         List<TiposCodigosConductuales> modelList = new ArrayList<>();
         HttpURLConnection connection = null;
         try {
+            // Se crea un objeto URL a partir de la URL final.
             URL url = new URL(apiUrl);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
 
             int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
+                // Leer la respuesta del servidor.
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 JSONArray jsonArray = new JSONArray(reader.readLine());
 
@@ -88,9 +98,11 @@ public class TiposCodigosConductualesController {
                     modelList.add(new TiposCodigosConductuales(idTipoCodigoConductual, tipoCodigoConductual));
                 }
             } else {
+                 // Manejar errores si la respuesta del servidor no es exitosa.
                 System.out.println("La solicitud HTTP no fue exitosa. Código de estado: " + responseCode);
             }
         } catch (IOException | JSONException e) {
+            // Manejar excepciones en caso de errores.
             System.out.println("Error al realizar la solicitud HTTP: " + e.getMessage());
         } finally {
             if (connection != null) {

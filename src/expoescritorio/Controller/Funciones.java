@@ -27,16 +27,20 @@ public class Funciones {
     
     public static CompletableFuture<List<ComunicadosModel>> GetComunicados() {
             return CompletableFuture.supplyAsync(() -> {
+                // URL del servicio web para obtener una lista 
                 String apiUrl = "https://expo2023-6f28ab340676.herokuapp.com/Comunicados/list";
                 List<ComunicadosModel> modelList = new ArrayList<>();
                 HttpURLConnection connection = null;
                 try {
+                    // Se crea una URL a partir de la apiUrl proporcionada.
                     URL url = new URL(apiUrl);
                     connection = (HttpURLConnection) url.openConnection();
+                    // Se configura la solicitud como un método GET.
                     connection.setRequestMethod("GET");
 
                     int responseCode = connection.getResponseCode();
                     if (responseCode == HttpURLConnection.HTTP_OK) {
+                        // Procesar la respuesta JSON del servidor.
                         BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                         JSONArray jsonArray = new JSONArray(reader.readLine());
 
@@ -50,9 +54,11 @@ public class Funciones {
                             modelList.add(new ComunicadosModel(idObservacion, idPeriodo,fecha,detalle, idEstudiante));
                         }
                     }else {
+                        // Manejar errores si la respuesta del servidor no es exitosa.
                         System.out.println("La solicitud HTTP no fue exitosa. Código de estado: " + responseCode);
                     }
                 }catch (IOException | JSONException e) {
+                    // Manejar excepciones si ocurren problemas durante la solicitud HTTP o el procesamiento JSON.
                     System.out.println("Error al realizar la solicitud HTTP: " + e.getMessage());
                 }finally {
                     if (connection != null) {
@@ -66,16 +72,20 @@ public class Funciones {
      public static CompletableFuture<List<CodigosString>> getCodigosConductualesStringApiAsync() {
          
         return CompletableFuture.supplyAsync(() -> {
+             // URL del servicio web para obtener una lista de inasistencias.
             String apiUrl = "https://expo2023-6f28ab340676.herokuapp.com/CodigosConductuales/String";
             List<CodigosString> modelList = new ArrayList<>();
             HttpURLConnection connection = null;
             try {
+                // Se crea una URL a partir de la apiUrl proporcionada.
                 URL url = new URL(apiUrl);
                 connection = (HttpURLConnection) url.openConnection();
+                // Se configura la solicitud como un método GET.
                 connection.setRequestMethod("GET");
 
                 int responseCode = connection.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
+                    // Procesar la respuesta JSON del servidor.
                     BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     JSONArray jsonArray = new JSONArray(reader.readLine());
 
@@ -87,9 +97,11 @@ public class Funciones {
                         modelList.add(new CodigosString(idCodigoConductual, nivelCodigoConductual, codigoConductual));
                     }
                 }else {
+                    // Manejar errores si la respuesta del servidor no es exitosa.
                     System.out.println("La solicitud HTTP no fue exitosa. Código de estado: " + responseCode);
                 }
             }catch (IOException | JSONException e) {
+                // Manejar excepciones si ocurren problemas durante la solicitud HTTP o el procesamiento JSON.
                 System.out.println("Error al realizar la solicitud HTTP: " + e.getMessage());
             }finally {
                 if (connection != null) {
@@ -101,16 +113,20 @@ public class Funciones {
     }
         public static CompletableFuture<List<CodigosConductualesString>> GetCodigosString() {
         return CompletableFuture.supplyAsync(() -> {
+            // URL del servicio web para obtener una lista de inasistencias.
             String apiUrl = "https://expo2023-6f28ab340676.herokuapp.com/Funciones/CodigosConductuales";
             List<CodigosConductualesString> modelList = new ArrayList<>();
             HttpURLConnection connection = null;
             try {
+                // Se crea una URL a partir de la apiUrl proporcionada.
                 URL url = new URL(apiUrl);
                 connection = (HttpURLConnection) url.openConnection();
+                // Se configura la solicitud como un método GET.
                 connection.setRequestMethod("GET");
 
                 int responseCode = connection.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
+                    // Procesar la respuesta JSON del servidor.
                     BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     JSONArray jsonArray = new JSONArray(reader.readLine());
 
@@ -127,9 +143,11 @@ public class Funciones {
                         modelList.add(new CodigosConductualesString(idCodigoConductual, estudiante, CodigoConductual,tipoCodigoConductual,Docente,idPeriodo, fecha,idEstudiante));
                     }
                 }else {
+                    // Manejar errores si la respuesta del servidor no es exitosa.
                     System.out.println("La solicitud HTTP no fue exitosa. Código de estado: " + responseCode);
                 }
             }catch (IOException | JSONException e) {
+                 // Manejar excepciones si ocurren problemas durante la solicitud HTTP o el procesamiento JSON.
                 System.out.println("Error al realizar la solicitud HTTP: " + e.getMessage());
             }finally {
                 if (connection != null) {
@@ -141,16 +159,20 @@ public class Funciones {
     }
         public static CompletableFuture<List<ReservacionesSalonestring>> GetReservacionesSalones() {
         return CompletableFuture.supplyAsync(() -> {
+            // URL del servicio web para obtener una lista de inasistencias.
             String apiUrl = "https://expo2023-6f28ab340676.herokuapp.com/Funciones/ReservacionesSalones";
             List<ReservacionesSalonestring> modelList = new ArrayList<>();
             HttpURLConnection connection = null;
             try {
+                // Se crea una URL a partir de la apiUrl proporcionada.
                 URL url = new URL(apiUrl);
                 connection = (HttpURLConnection) url.openConnection();
+                // Se configura la solicitud como un método GET.
                 connection.setRequestMethod("GET");
 
                 int responseCode = connection.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
+                    // Procesar la respuesta JSON del servidor.
                     BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     JSONArray jsonArray = new JSONArray(reader.readLine());
 
@@ -167,9 +189,11 @@ public class Funciones {
                         modelList.add(new ReservacionesSalonestring(idReservacionSalon, Salon, Inicio,Final,Reservante,motivoReserva, idReservante, Estado));
                     }
                 }else {
+                    // Manejar errores si la respuesta del servidor no es exitosa.
                     System.out.println("La solicitud HTTP no fue exitosa. Código de estado: " + responseCode);
                 }
             }catch (IOException | JSONException e) {
+                // Manejar excepciones si ocurren problemas durante la solicitud HTTP o el procesamiento JSON.
                 System.out.println("Error al realizar la solicitud HTTP: " + e.getMessage());
             }finally {
                 if (connection != null) {
@@ -181,16 +205,20 @@ public class Funciones {
     }
         public static CompletableFuture<List<ObservacionesString>> GetObservaciones() {
         return CompletableFuture.supplyAsync(() -> {
+            // URL del servicio web para obtener una lista de inasistencias.
             String apiUrl = "https://expo2023-6f28ab340676.herokuapp.com/Funciones/Observaciones";
             List<ObservacionesString> modelList = new ArrayList<>();
             HttpURLConnection connection = null;
             try {
+                // Se crea una URL a partir de la apiUrl proporcionada.
                 URL url = new URL(apiUrl);
                 connection = (HttpURLConnection) url.openConnection();
+                // Se configura la solicitud como un método GET.
                 connection.setRequestMethod("GET");
 
                 int responseCode = connection.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
+                    // Procesar la respuesta JSON del servidor.
                     BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     JSONArray jsonArray = new JSONArray(reader.readLine());
 
@@ -206,9 +234,11 @@ public class Funciones {
                         modelList.add(new ObservacionesString(idObservacion, Estudiante, Docente,idPeriodo,fecha,detalle, idEstudiante));
                     }
                 }else {
+                    // Manejar errores si la respuesta del servidor no es exitosa.
                     System.out.println("La solicitud HTTP no fue exitosa. Código de estado: " + responseCode);
                 }
             }catch (IOException | JSONException e) {
+                // Manejar excepciones si ocurren problemas durante la solicitud HTTP o el procesamiento JSON.
                 System.out.println("Error al realizar la solicitud HTTP: " + e.getMessage());
             }finally {
                 if (connection != null) {
@@ -223,16 +253,20 @@ public class Funciones {
     }
         public static CompletableFuture<List<GradosView>> GetGrados() {
         return CompletableFuture.supplyAsync(() -> {
+            // URL del servicio web para obtener una lista de inasistencias.
             String apiUrl = "https://expo2023-6f28ab340676.herokuapp.com/Grados/list";
             List<GradosView> modelList = new ArrayList<>();
             HttpURLConnection connection = null;
             try {
+                 // Se crea una URL a partir de la apiUrl proporcionada.
                 URL url = new URL(apiUrl);
                 connection = (HttpURLConnection) url.openConnection();
+                // Se configura la solicitud como un método GET.
                 connection.setRequestMethod("GET");
 
                 int responseCode = connection.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
+                    // Procesar la respuesta JSON del servidor.
                     BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     JSONArray jsonArray = new JSONArray(reader.readLine());
 
@@ -249,9 +283,11 @@ public class Funciones {
                         modelList.add(new GradosView(idGrado, idNivelAcademico, idSeccion,idSeccionBachillerato,idDocenteEncargado,idEspecialidad, idGrupoTecnico, horario));
                     }
                 }else {
+                    // Manejar errores si la respuesta del servidor no es exitosa.
                     System.out.println("La solicitud HTTP no fue exitosa. Código de estado: " + responseCode);
                 }
             }catch (IOException | JSONException e) {
+                // Manejar excepciones si ocurren problemas durante la solicitud HTTP o el procesamiento JSON.
                 System.out.println("Error al realizar la solicitud HTTP: " + e.getMessage());
             }finally {
                 if (connection != null) {
@@ -263,16 +299,20 @@ public class Funciones {
     }
         public static CompletableFuture<List<LlegadasTardeString>> GetLLegadasTardes() {
         return CompletableFuture.supplyAsync(() -> {
+            // URL del servicio web para obtener una lista de inasistencias.
             String apiUrl = "https://expo2023-6f28ab340676.herokuapp.com/Funciones/LlegadasTardes";
             List<LlegadasTardeString> modelList = new ArrayList<>();
             HttpURLConnection connection = null;
             try {
+                // Se crea una URL a partir de la apiUrl proporcionada.
                 URL url = new URL(apiUrl);
                 connection = (HttpURLConnection) url.openConnection();
+                // Se configura la solicitud como un método GET.
                 connection.setRequestMethod("GET");
 
                 int responseCode = connection.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
+                     // Procesar la respuesta JSON del servidor.
                     BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     JSONArray jsonArray = new JSONArray(reader.readLine());
                     for (int i = 0; i < jsonArray.length(); i++) {
@@ -290,9 +330,11 @@ public class Funciones {
                     
                     }
                 } else {
+                    // Manejar errores si la respuesta del servidor no es exitosa.
                     System.out.println("La solicitud HTTP no fue exitosa. Código de estado: " + responseCode);
                 }
             } catch (IOException | JSONException e) {
+                // Manejar excepciones si ocurren problemas durante la solicitud HTTP o el procesamiento JSON.
                 System.out.println("Error al realizar la solicitud HTTP: " + e.getMessage());
             } finally {
                 if (connection != null) {
@@ -304,16 +346,20 @@ public class Funciones {
     }
           public static CompletableFuture<List<Inasisitenciastring>> GetInasisitencias() {
         return CompletableFuture.supplyAsync(() -> {
+            // URL del servicio web para obtener una lista de inasistencias.
             String apiUrl = "https://expo2023-6f28ab340676.herokuapp.com/Funciones/Inasisitencias";
             List<Inasisitenciastring> modelList = new ArrayList<>();
             HttpURLConnection connection = null;
             try {
+                // Se crea una URL a partir de la apiUrl proporcionada.
                 URL url = new URL(apiUrl);
                 connection = (HttpURLConnection) url.openConnection();
+                 // Se configura la solicitud como un método GET.
                 connection.setRequestMethod("GET");
 
                 int responseCode = connection.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
+                    // Procesar la respuesta JSON del servidor.
                     BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     JSONArray jsonArray = new JSONArray(reader.readLine());
                     for (int i = 0; i < jsonArray.length(); i++) {
@@ -331,9 +377,11 @@ public class Funciones {
                     
                     }
                 } else {
+                     // Manejar errores si la respuesta del servidor no es exitosa.
                     System.out.println("La solicitud HTTP no fue exitosa. Código de estado: " + responseCode);
                 }
             } catch (IOException | JSONException e) {
+                // Manejar excepciones si ocurren problemas durante la solicitud HTTP o el procesamiento JSON.
                 System.out.println("Error al realizar la solicitud HTTP: " + e.getMessage());
             } finally {
                 if (connection != null) {
@@ -347,16 +395,20 @@ public class Funciones {
         
         public static CompletableFuture<List<VisitasEnfermeriaString>> GetVisitasEnfermeria() {
         return CompletableFuture.supplyAsync(() -> {
+            // URL del servicio web para obtener una lista de inasistencias.
             String apiUrl = "https://expo2023-6f28ab340676.herokuapp.com/VisitasEnfermeria/String";
             List<VisitasEnfermeriaString> modelList = new ArrayList<>();
             HttpURLConnection connection = null;
             try {
+                // Se crea una URL a partir de la apiUrl proporcionada.
                 URL url = new URL(apiUrl);
                 connection = (HttpURLConnection) url.openConnection();
+                 // Se configura la solicitud como un método GET.
                 connection.setRequestMethod("GET");
 
                 int responseCode = connection.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
+                    // Procesar la respuesta JSON del servidor.
                     BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     JSONArray jsonArray = new JSONArray(reader.readLine());
                     for (int i = 0; i < jsonArray.length(); i++) {
@@ -371,9 +423,11 @@ public class Funciones {
                     }
                     
                 } else {
+                    // Manejar errores si la respuesta del servidor no es exitosa.
                     System.out.println("La solicitud HTTP no fue exitosa. Código de estado: " + responseCode);
                 }
             } catch (IOException | JSONException e) {
+                // Manejar excepciones si ocurren problemas durante la solicitud HTTP o el procesamiento JSON.
                 System.out.println("Error al realizar la solicitud HTTP: " + e.getMessage());
             } finally {
                 if (connection != null) {

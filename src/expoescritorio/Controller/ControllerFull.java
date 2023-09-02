@@ -58,12 +58,14 @@ public class ControllerFull {
             HttpURLConnection connection = null;
 
             try {
+                // Se crea una URL a partir de la endpointUrl proporcionada.
                 URL url = new URL(endpointUrl);
                 connection = (HttpURLConnection) url.openConnection();
+                // Se configura la solicitud como un método PUT y se establecen las cabeceras.
                 connection.setRequestMethod("PUT");
                 connection.setRequestProperty("Content-Type", "application/json");
                 connection.setDoOutput(true);
-
+                // Se prepara el cuerpo de la solicitud con el JSON proporcionado.
                 String jsonInputString = jsonStrings;
                 try (DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream())) {
                     outputStream.writeBytes(jsonInputString);
@@ -72,6 +74,7 @@ public class ControllerFull {
 
                 int responseCode = connection.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
+                    // Si la solicitud fue exitosa, se puede procesar la respuesta si es necesario.
                     try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                         StringBuilder responseBuilder = new StringBuilder();
                         String response;
@@ -82,9 +85,11 @@ public class ControllerFull {
                     }
                     return true;
                 } else {
+                    // Manejar errores si la respuesta del servidor no es exitosa.
                     System.out.println("La solicitud HTTP no fue exitosa. Código de estado: " + responseCode);
                 }
             } catch (IOException e) {
+                // Manejar excepciones si ocurren problemas durante la solicitud HTTP.
                 System.out.println("Error al realizar la solicitud HTTP: " + e.getMessage());
             } finally {
                 if (connection != null) {
@@ -98,22 +103,28 @@ public class ControllerFull {
 
     public static CompletableFuture<Boolean> DeleteApiAsync(String endpointUrl, int id) {
         return CompletableFuture.supplyAsync(() -> {
+            // Construye la URL completa para la solicitud DELETE.
             String apiUrl = endpointUrl + "/" + id;
 
             HttpURLConnection connection = null;
 
             try {
+                // Crea una URL a partir de la apiUrl proporcionada.
                 URL url = new URL(apiUrl);
                 connection = (HttpURLConnection) url.openConnection();
+                // Configura la solicitud como un método DELETE.
                 connection.setRequestMethod("DELETE");
 
                 int responseCode = connection.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
+                    // Si la solicitud fue exitosa, devuelve true para indicar que el recurso se eliminó.
                     return true;
                 } else {
+                    // Maneja errores si la respuesta del servidor no es exitosa.
                     System.out.println("La solicitud HTTP no fue exitosa. Código de estado: " + responseCode);
                 }
             } catch (IOException e) {
+                // Maneja excepciones si ocurren problemas durante la solicitud HTTP.
                 System.out.println("Error al realizar la solicitud HTTP: " + e.getMessage());
             } finally {
                 if (connection != null) {

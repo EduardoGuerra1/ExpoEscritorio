@@ -25,9 +25,10 @@ public class GradosController {
     
     private static String addQueryParameters(String baseUrl, Map<String, String> params) {
         StringBuilder builder = new StringBuilder(baseUrl);
-
+        // Verifica si hay parámetros en el mapa.
         if (!params.isEmpty()) {
             builder.append("?");
+            // Itera a través del mapa de parámetros y los agrega a la URL.
             for (Map.Entry<String, String> entry : params.entrySet()) {
                 builder.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
             }
@@ -40,7 +41,7 @@ public class GradosController {
     public static Grados getGradoAcademico(int idNivelAcademico, int idSeccion, int idSeccionBachillerato) {
         
         String baseUrl = "https://expo2023-6f28ab340676.herokuapp.com/Grados/gradoAcademico";
-
+        // Parámetros de consulta a ser agregados a la URL.
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("idNivelAcademico", String.valueOf(idNivelAcademico));
         queryParams.put("idSeccion", String.valueOf(idSeccion));
@@ -49,13 +50,16 @@ public class GradosController {
         String url = addQueryParameters(baseUrl, queryParams);
 
         try {
+            // Crea un objeto URL a partir de la URL completa.
             URL urlObject = new URL(url);
+            // Abre una conexión HTTP.
             HttpURLConnection connection = (HttpURLConnection) urlObject.openConnection();
             connection.setRequestMethod("GET");
 
             int responseCode = connection.getResponseCode();
 
             if (responseCode == 200) {
+                // Lee la respuesta del servidor.
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 String inputLine;
                 StringBuilder response = new StringBuilder();
@@ -72,6 +76,7 @@ public class GradosController {
                     return gson.fromJson(responseData, Grados.class);
                 }
             } else {
+                // Maneja errores si la respuesta del servidor no es exitosa.
                 System.out.println("No se encontro: " + responseCode);
             }
 
@@ -83,9 +88,9 @@ public class GradosController {
     }
     
     public static Grados getGradoTecnico(int idEspecialidad, int idGrupoTecnico) {
-        
+        // URL base del servicio web para obtener información 
         String baseUrl = "https://expo2023-6f28ab340676.herokuapp.com/Grados/gradoTecnico";
-
+        // Parámetros de consulta a ser agregados a la URL.
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("idEspecialidad", String.valueOf(idEspecialidad));
         queryParams.put("idGrupoTecnico", String.valueOf(idGrupoTecnico));
@@ -93,13 +98,16 @@ public class GradosController {
         String url = addQueryParameters(baseUrl, queryParams);
 
         try {
+            // Crea un objeto URL a partir de la URL completa.
             URL urlObject = new URL(url);
+            // Abre una conexión HTTP.
             HttpURLConnection connection = (HttpURLConnection) urlObject.openConnection();
             connection.setRequestMethod("GET");
 
             int responseCode = connection.getResponseCode();
 
             if (responseCode == 200) {
+                // Lee la respuesta del servidor.
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 String inputLine;
                 StringBuilder response = new StringBuilder();
@@ -116,6 +124,7 @@ public class GradosController {
                     return gson.fromJson(responseData, Grados.class);
                 }
             } else {
+                 // Maneja errores si la respuesta del servidor no es exitosa.
                 System.out.println("No se encontro: " + responseCode);
             }
 

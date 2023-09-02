@@ -39,22 +39,27 @@ public class PersonasController {
     
     public static CompletableFuture<Boolean> deleteCodigoPersona(String codigo){
         return CompletableFuture.supplyAsync(() -> {
+            // URL del servicio web para eliminar un código de persona.
             String apiUrl = "https://expo2023-6f28ab340676.herokuapp.com/Credenciales/deleteCodigo/"+codigo;
 
             HttpURLConnection connection = null;
 
             try {
+                // Se crea una URL a partir de la apiUrl proporcionada.
                 URL url = new URL(apiUrl);
                 connection = (HttpURLConnection) url.openConnection();
+                // Se configura la solicitud como un método DELETE.
                 connection.setRequestMethod("DELETE");
 
                 int responseCode = connection.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     return true;
                 } else {
+                    // Manejar errores si la respuesta del servidor no es exitosa.
                     System.out.println("La solicitud HTTP no fue exitosa. Código de estado: " + responseCode);
                 }
             } catch (IOException e) {
+                // Manejar excepciones si ocurren problemas durante la solicitud HTTP.
                 System.out.println("Error al realizar la solicitud HTTP: " + e.getMessage());
             } finally {
                 if (connection != null) {

@@ -16,6 +16,7 @@ public class Recuperaciones {
      public void mandarCorreo(String Correo, String Mns ){
        
         try{
+            // Configuración de las credenciales y detalles del correo.
             String correoEmisor = "alessandromorales0822@gmail.com";
             String contraseñaEmisor = "vwxipuzmxzqahkqd";     
             String CorreoReceptor = Correo;
@@ -54,12 +55,13 @@ public class Recuperaciones {
         }
     }
     public static String generateRandomCode() {
-        int length = 10;
+        int length = 10;// Longitud del código generado.
+        // Caracteres permitidos para el código.
         String allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         int charsLength = allowedChars.length();
-        Random random = new Random();
+        Random random = new Random();// Objeto Random para generar números aleatorios.
         StringBuilder codeBuilder = new StringBuilder(length);
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i < length; i++) { // Generar el código aleatorio.
             int randomIndex = random.nextInt(charsLength);
             char randomChar = allowedChars.charAt(randomIndex);
             codeBuilder.append(randomChar);
