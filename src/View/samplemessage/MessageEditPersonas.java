@@ -5,6 +5,8 @@
 package View.samplemessage;
 
 import Services.Encriptacion;
+import Services.Validaciones;
+import View.Application.form.other.Credenciales;
 import View.Application.form.other.Estudiantes;
 import View.glasspanepopup.GlassPanePopup;
 import com.formdev.flatlaf.FlatClientProperties;
@@ -41,6 +43,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -67,6 +70,7 @@ public class MessageEditPersonas extends javax.swing.JPanel {
     String rute = "";
     Personas modelEstudiante = null;
     File mImageFile = null;
+    Credenciales frm = null;
     /**
      * Creates new form MessageEditEstudiante
      */
@@ -146,9 +150,10 @@ public class MessageEditPersonas extends javax.swing.JPanel {
 
                     Estudiantes cd = new Estudiantes();
 
-                    cd.cargarDatos();
+                    frm.deleteAllTableRows(frm.table1);
+                    frm.cargarDatos();
 
-                    cd.deleteAllTableRows(cd.table1);
+                    
                     boolean pC = panelClosing() == true;
                     GlassPanePopup.closePopupLast();
 
@@ -169,7 +174,7 @@ public class MessageEditPersonas extends javax.swing.JPanel {
         
     }
     
-    public MessageEditPersonas(Personas estudiante) throws SQLException, IOException {
+    public MessageEditPersonas(Personas estudiante, Credenciales frmCredenciales) throws SQLException, IOException {
         initComponents();
         setOpaque(false);
 
@@ -178,7 +183,7 @@ public class MessageEditPersonas extends javax.swing.JPanel {
         txtTitle.putClientProperty(FlatClientProperties.STYLE, ""
                 + "font:$h4.font");
         
-        
+        this.frm = frmCredenciales;
         
         CompletableFuture<List<TiposPersonas>> seccionesFuture = 
                 TiposPersonasController.getTiposPersonasApiAsync();
@@ -642,8 +647,8 @@ public class MessageEditPersonas extends javax.swing.JPanel {
             Timer timer = new Timer(500, (ActionEvent e) -> {
                 Estudiantes cd = new Estudiantes();
 
-                cd.cargarDatos();
-                cd.deleteAllTableRows(cd.table1);
+                frm.deleteAllTableRows(frm.table1);
+                frm.cargarDatos();
             });
             timer.setRepeats(false);
             timer.start();
@@ -727,7 +732,20 @@ public class MessageEditPersonas extends javax.swing.JPanel {
         // TODO add your handling code here:
         if (txtNombres2.getText().isEmpty() || txtApellidos1.getText().isEmpty() || txtCodigo1.getText().isEmpty()) {
             Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "Los campos no puede estar vacío");
-        }  else {
+        }  
+        else if(!Validaciones.checkName(txtNombres2.getText()) || !Validaciones.checkName(txtApellidos1.getText())){
+            Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "El nombre o apellido es invalido");
+        }
+        else if(!Validaciones.checkDateDown(dpNacimiento1.getDate().toInstant().atOffset(ZoneOffset.UTC))){
+            Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "La fecha de nacimiento no es válida");
+        }
+        else if(!Validaciones.onlyInts(txtCodigo1.getText())){
+            Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "El codigo solo debe tener números");
+        }
+        else if(!txtClave1.getText().isEmpty() && txtClave1.getText().length()<6){
+            Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "La contraseña debe ser de al menos 6 caracteres");
+        }
+        else {
             try {
                 enviarDatosHaciaApi();
             } catch (IOException ex) {

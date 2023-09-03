@@ -88,10 +88,12 @@ public class SeccionesController {
                         return gson.fromJson(responseData, Secciones.class);
                     }
                 } else {
+                    
                     // Manejar errores si la respuesta del servidor no es exitosa.
                     System.out.println("La solicitud HTTP no fue exitosa. Código de estado: " + responseCode);
                 }
             } catch (Exception e) {
+                System.out.println("fue aca");
                 System.out.println("Error al realizar la solicitud HTTP: " + e.getMessage());
             } finally {
                 if (connection != null) {

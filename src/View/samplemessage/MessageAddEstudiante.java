@@ -59,6 +59,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.time.ZoneOffset;
 import java.util.Base64;
 import java.util.Date;
 import java.util.logging.Level;
@@ -78,8 +79,9 @@ public class MessageAddEstudiante extends javax.swing.JPanel {
     List<GruposTecnicos> seccionesBachillerato = new ArrayList<GruposTecnicos>();
     List<SeccionesBachillerato> secciones = new ArrayList<SeccionesBachillerato>();
     String rute = "";
+    Estudiantes frm = null;
     
-    public MessageAddEstudiante() {
+    public MessageAddEstudiante(Estudiantes estudiantesFrm) {
 
         initComponents();
         setOpaque(false);
@@ -88,6 +90,9 @@ public class MessageAddEstudiante extends javax.swing.JPanel {
         txtTitle.setOpaque(false);
         txtTitle.putClientProperty(FlatClientProperties.STYLE, ""
                 + "font:$h4.font");
+        
+        this.frm = estudiantesFrm;
+        
         // Obtener los datos de la API y cargarlos en el ComboBox
         
         CompletableFuture<List<NivelesAcademicos>> nivelesFuture = 
@@ -335,6 +340,9 @@ public class MessageAddEstudiante extends javax.swing.JPanel {
         int idSeccion = SeccionesController.getSeccionesbyNameApiAsync(stringSeccion).join().getIdSeccion();
         
         
+        
+        
+        
         if (txtNombres.getText().isEmpty() || txtApellidos.getText().isEmpty() || txtCodigo.getText().isEmpty()) {
             Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "Los campos no puede estar vacío");
         }
@@ -344,6 +352,18 @@ public class MessageAddEstudiante extends javax.swing.JPanel {
         else if (GradosController.getGradoTecnico(idEspecialidad, idGrupoTecnico) == null){
             Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "El grado técnico no es válido");
         }
+         else if(!Validaciones.checkName(txtNombres.getText()) || !Validaciones.checkName(txtApellidos.getText())){
+            Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "El nombre o apellido es invalido");
+        }
+        else if(!Validaciones.checkDateDown(dpNacimiento.getDate().toInstant().atOffset(ZoneOffset.UTC))){
+            Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "La fecha de nacimiento no es válida");
+        }
+        else if(!Validaciones.onlyInts(txtCodigo.getText())){
+            Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "El codigo solo debe tener números");
+        }
+        else if(!txtClave.getText().isEmpty() && txtClave.getText().length()<6){
+            Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "La contraseña debe ser de al menos 6 caracteres");
+        }
         else {
             try {
                 enviarDatosHaciaApi();
@@ -351,10 +371,9 @@ public class MessageAddEstudiante extends javax.swing.JPanel {
                 Logger.getLogger(MessageAddEstudiante.class.getName()).log(Level.SEVERE, null, ex);
             }
             Timer timer = new Timer(500, (ActionEvent e) -> {
-                Estudiantes cd = new Estudiantes();
-
-                cd.cargarDatos();
-                cd.deleteAllTableRows(cd.table1);
+                
+                frm.cargarDatos();
+                frm.deleteAllTableRows(frm.table1);
             });
             timer.setRepeats(false);
             timer.start();
@@ -415,7 +434,7 @@ public class MessageAddEstudiante extends javax.swing.JPanel {
         
         if(res == JFileChooser.APPROVE_OPTION){
             rute = chooser.getSelectedFile().getPath();
-            
+            System.out.println(rute);
             Image mImagen = new ImageIcon(rute).getImage();
             ImageIcon mIcono = new ImageIcon(mImagen.getScaledInstance(lbImagen.getWidth(), lbImagen.getHeight(), Image.SCALE_SMOOTH));
             lbImagen.setIcon(mIcono);
@@ -482,7 +501,10 @@ public class MessageAddEstudiante extends javax.swing.JPanel {
             int idEspecialidad = gradosTecnicos.get(cbTecnicos.getSelectedIndex()).getIdEspecialidad();
         
             int idSeccion = SeccionesController.getSeccionesbyNameApiAsync(stringSeccion).join().getIdSeccion();
+            
+            
             Grados gradoAcademico = GradosController.getGradoAcademico(idNivelAcademico, idSeccion, idSeccionBachillerato);
+            
             Grados gradoTecnico = GradosController.getGradoTecnico(idEspecialidad, idGrupoTecnico);
             
             matricularGrado(gradoAcademico, gradoTecnico);
@@ -504,7 +526,7 @@ public class MessageAddEstudiante extends javax.swing.JPanel {
             byte[] imageBytes;
             String base64Image="";
             
-            if(rute==""){
+            if(rute.isEmpty()){
                 
             }
             else{
@@ -543,11 +565,7 @@ public class MessageAddEstudiante extends javax.swing.JPanel {
                     
                     matricular();
 
-                    Estudiantes cd = new Estudiantes();
-
-                    cd.cargarDatos();
-
-                    cd.deleteAllTableRows(cd.table1);
+                    
                     boolean pC = panelClosing() == true;
                     GlassPanePopup.closePopupLast();
 

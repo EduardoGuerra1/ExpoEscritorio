@@ -345,30 +345,12 @@ public class Credenciales extends javax.swing.JPanel {
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         // TODO add your handling code here:
         
-        MessageAddPersonas obj = new MessageAddPersonas();
+        MessageAddPersonas obj = new MessageAddPersonas(this);
         obj.txtTitle.setText("Añadir Credencial");
-        obj.eventOK(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                System.out.println("Click OK");
-                
-                GlassPanePopup.closePopupLast();
-                Timer timer = new Timer(500, (ActionEvent e) -> {
-                    deleteAllTableRows(table1);
-                    cargarDatos();
-                });
-                timer.setRepeats(false);
-                timer.start();
-            }
-        });
+
         GlassPanePopup.showPopup(obj);
 
-        Timer timer = new Timer(500, (ActionEvent e) -> {
-            deleteAllTableRows(table1);
-            cargarDatos();
-        });
-        timer.setRepeats(false);
-        timer.start();
+       
         
     }//GEN-LAST:event_btnAddActionPerformed
 
@@ -391,30 +373,13 @@ public class Credenciales extends javax.swing.JPanel {
         }
         else{
             try{
-                MessageEditPersonas obj = new MessageEditPersonas(myPersonas.get(indx));
+                MessageEditPersonas obj = new MessageEditPersonas(myPersonas.get(indx),this);
                 
                 obj.txtTitle.setText("Actualizar Estudiante");
-                obj.eventOK(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent ae) {
-                        System.out.println("Click OK");
-                        GlassPanePopup.closePopupLast();
-                        Timer timer = new Timer(2000, (ActionEvent e) -> {
-                            deleteAllTableRows(table1);
-                            cargarDatos();
-                        });
-                        timer.setRepeats(false);
-                        timer.start();
-                    }
-                });
+                
                 GlassPanePopup.showPopup(obj);
 
-                Timer timer = new Timer(2000, (ActionEvent e) -> {
-                    deleteAllTableRows(table1);
-                    cargarDatos();
-                });
-                timer.setRepeats(false);
-                timer.start();
+                
             }
             catch(Exception e){
                 System.out.println(e.getMessage());
@@ -431,6 +396,6 @@ public class Credenciales extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lb;
-    private View.ExampleTable.Table table1;
+    public View.ExampleTable.Table table1;
     // End of variables declaration//GEN-END:variables
 }

@@ -152,7 +152,7 @@ public class PersonasController {
     
     public static CompletableFuture<String> getGrupoTecnicoPersona(int idPersona){
        return CompletableFuture.supplyAsync(()->{
-          String apiUrl =  "https://expo2023-6f28ab340676.herokuapp.com/Credenciales/getGrupoTecnicoTecnico/"+idPersona;
+          String apiUrl =  "https://expo2023-6f28ab340676.herokuapp.com/Credenciales/getGrupoTecnico/"+idPersona;
           String grado = "";
           HttpURLConnection connection = null;
           try {

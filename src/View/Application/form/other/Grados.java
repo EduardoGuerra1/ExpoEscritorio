@@ -386,7 +386,7 @@ public class Grados extends javax.swing.JPanel {
 
     private void btnAddMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddMouseClicked
         // TODO add your handling code here:
-        MessageAddEstudiante obj = new MessageAddEstudiante();
+        /*MessageAddEstudiante obj = new MessageAddEstudiante();
         obj.txtTitle.setText("Añadir Estudiante");
         obj.eventOK(new ActionListener() {
             @Override
@@ -409,7 +409,7 @@ public class Grados extends javax.swing.JPanel {
             cargarDatos();
         });
         timer.setRepeats(false);
-        timer.start();
+        timer.start();*/
 
     }//GEN-LAST:event_btnAddMouseClicked
 

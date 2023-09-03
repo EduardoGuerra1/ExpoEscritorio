@@ -5,6 +5,7 @@
 package View.samplemessage;
 
 import Services.Encriptacion;
+import Services.Validaciones;
 import View.Application.form.other.Estudiantes;
 import View.glasspanepopup.GlassPanePopup;
 import com.formdev.flatlaf.FlatClientProperties;
@@ -45,6 +46,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -74,6 +76,7 @@ public class MessageEditEstudiante extends javax.swing.JPanel {
     String rute = "";
     Personas modelEstudiante = null;
     File mImageFile = null;
+    Estudiantes frm = null;
     /**
      * Creates new form MessageEditEstudiante
      */
@@ -94,9 +97,12 @@ public class MessageEditEstudiante extends javax.swing.JPanel {
     
     private void matricularGrado(Grados grado1, Grados grado2){
         try{
+            
+            
             JSONObject jsonData = new JSONObject();
             
             Matriculas estudiante = MatriculasController.getMatricula(modelEstudiante.getIdPersona());
+            
             
             jsonData.put("idMatricula", estudiante.getIdMatricula());
             jsonData.put("idEstudiante", modelEstudiante.getIdPersona());
@@ -133,15 +139,21 @@ public class MessageEditEstudiante extends javax.swing.JPanel {
 
     private void matricular(){
         try{
-            int idNivelAcademico = gradosAcademicos.get( cbAcademicos.getSelectedIndex()).getIdNivelAcademico();
-            int idSeccionBachillerato = secciones.get(cbSeccionAcademica.getSelectedIndex()).getIdSeccionBachillerato();
-            char seccion = secciones.get(cbSeccionAcademica.getSelectedIndex()).getSeccionBachillerato().charAt(0);
+            int idNivelAcademico = gradosAcademicos.get( cbAcademicos1.getSelectedIndex()).getIdNivelAcademico();
+            int idSeccionBachillerato = secciones.get(cbSeccionAcademica1.getSelectedIndex()).getIdSeccionBachillerato();
+            char seccion = secciones.get(cbSeccionAcademica1.getSelectedIndex()).getSeccionBachillerato().charAt(0);
             String stringSeccion = ""; stringSeccion += seccion;
         
-            int idGrupoTecnico = seccionesBachillerato.get(cbSeccionTecnica.getSelectedIndex()).getIdGrupoTecnico();
-            int idEspecialidad = gradosTecnicos.get(cbTecnicos.getSelectedIndex()).getIdEspecialidad();
+            
+            
+            int idGrupoTecnico = seccionesBachillerato.get(cbSeccionTecnica1.getSelectedIndex()).getIdGrupoTecnico();
+            int idEspecialidad = gradosTecnicos.get(cbTecnicos1.getSelectedIndex()).getIdEspecialidad();
+            
+            System.out.println(idGrupoTecnico+" "+idEspecialidad);
+            
         
             int idSeccion = SeccionesController.getSeccionesbyNameApiAsync(stringSeccion).join().getIdSeccion();
+            
             Grados gradoAcademico = GradosController.getGradoAcademico(idNivelAcademico, idSeccion, idSeccionBachillerato);
             Grados gradoTecnico = GradosController.getGradoTecnico(idEspecialidad, idGrupoTecnico);
             
@@ -192,7 +204,7 @@ public class MessageEditEstudiante extends javax.swing.JPanel {
             jsonData.put("nacimientoPersona", formattedDate);
             jsonData.put("idTipoPersona", 2);
             jsonData.put("correo",txtCodigo1.getText()+"@ricaldone.edu.sv");
-            if(!txtClave.getText().isEmpty()) jsonData.put("claveCredenciales", Encriptacion.encryptPassword(txtClave1.getText()));
+            if(!txtClave1.getText().isEmpty()) jsonData.put("claveCredenciales", Encriptacion.encryptPassword(txtClave1.getText()));
             else jsonData.put("claveCredenciales", modelEstudiante.getClaveCredenciales());
             jsonData.put("foto", base64Image);
             
@@ -234,7 +246,7 @@ public class MessageEditEstudiante extends javax.swing.JPanel {
         
     }
     
-    public MessageEditEstudiante(Personas estudiante) throws SQLException, IOException {
+    public MessageEditEstudiante(Personas estudiante, Estudiantes estudiantesFrm) throws SQLException, IOException {
         initComponents();
         setOpaque(false);
 
@@ -243,6 +255,7 @@ public class MessageEditEstudiante extends javax.swing.JPanel {
         txtTitle.putClientProperty(FlatClientProperties.STYLE, ""
                 + "font:$h4.font");
         
+        this.frm = estudiantesFrm;
         
         CompletableFuture<List<NivelesAcademicos>> nivelesFuture = 
                 NivelesAcademicosController.getNivelesAcademicosApiAsync();
@@ -746,21 +759,7 @@ public class MessageEditEstudiante extends javax.swing.JPanel {
 
     private void btnImagenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImagenActionPerformed
         // TODO add your handling code here:
-        rute = "";
-        JFileChooser chooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG & PNG","jpg","png");
-        chooser.setFileFilter(filter);
-
-        int res = chooser.showOpenDialog(this);
-
-        if(res == JFileChooser.APPROVE_OPTION){
-            rute = chooser.getSelectedFile().getPath();
-
-            Image mImagen = new ImageIcon(rute).getImage();
-            ImageIcon mIcono = new ImageIcon(mImagen.getScaledInstance(lbImagen.getWidth(), lbImagen.getHeight(), Image.SCALE_SMOOTH));
-            lbImagen.setIcon(mIcono);
-
-        }
+        
 
     }//GEN-LAST:event_btnImagenActionPerformed
 
@@ -768,43 +767,7 @@ public class MessageEditEstudiante extends javax.swing.JPanel {
     private void btnAceptarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAceptarMouseClicked
         // TODO add your handling code here:
 
-        int idNivelAcademico = gradosAcademicos.get( cbAcademicos.getSelectedIndex()).getIdNivelAcademico();
-        int idSeccionBachillerato = secciones.get(cbSeccionAcademica.getSelectedIndex()).getIdSeccionBachillerato();
-        char seccion = secciones.get(cbSeccionAcademica.getSelectedIndex()).getSeccionBachillerato().charAt(0);
-        String stringSeccion = ""; stringSeccion += seccion;
         
-        int idGrupoTecnico = seccionesBachillerato.get(cbSeccionTecnica.getSelectedIndex()).getIdGrupoTecnico();
-        int idEspecialidad = gradosTecnicos.get(cbTecnicos.getSelectedIndex()).getIdEspecialidad();
-        
-        int idSeccion = SeccionesController.getSeccionesbyNameApiAsync(stringSeccion).join().getIdSeccion();
-        
-        
-        if (txtNombres.getText().isEmpty() || txtApellidos.getText().isEmpty() || txtCodigo.getText().isEmpty()) {
-            Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "Los campos no puede estar vacíos");
-        }
-        else if(GradosController.getGradoAcademico(idNivelAcademico, idSeccion, idSeccionBachillerato) == null){
-            Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "El grado académico no es válido");
-        }
-        else if (GradosController.getGradoTecnico(idEspecialidad, idGrupoTecnico) == null){
-            Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "El grado técnico no es válido");
-        }
-        else {
-            try {
-                enviarDatosHaciaApi();
-            } catch (IOException ex) {
-                Logger.getLogger(MessageAddEstudiante.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            Timer timer = new Timer(500, (ActionEvent e) -> {
-                
-                
-                Estudiantes cd = new Estudiantes();
-
-                cd.cargarDatos();
-                cd.deleteAllTableRows(cd.table1);
-            });
-            timer.setRepeats(false);
-            timer.start();
-        }
 
     }//GEN-LAST:event_btnAceptarMouseClicked
 
@@ -866,8 +829,8 @@ public class MessageEditEstudiante extends javax.swing.JPanel {
             rute = chooser.getSelectedFile().getPath();
 
             Image mImagen = new ImageIcon(rute).getImage();
-            ImageIcon mIcono = new ImageIcon(mImagen.getScaledInstance(lbImagen.getWidth(), lbImagen.getHeight(), Image.SCALE_SMOOTH));
-            lbImagen.setIcon(mIcono);
+            ImageIcon mIcono = new ImageIcon(mImagen.getScaledInstance(lbImagen1.getWidth(), lbImagen1.getHeight(), Image.SCALE_SMOOTH));
+            lbImagen1.setIcon(mIcono);
 
         }
 
@@ -882,19 +845,48 @@ public class MessageEditEstudiante extends javax.swing.JPanel {
 
     private void btnAceptar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptar1ActionPerformed
         // TODO add your handling code here:
+        int idNivelAcademico = gradosAcademicos.get( cbAcademicos1.getSelectedIndex()).getIdNivelAcademico();
+        int idSeccionBachillerato = secciones.get(cbSeccionAcademica1.getSelectedIndex()).getIdSeccionBachillerato();
+        char seccion = secciones.get(cbSeccionAcademica1.getSelectedIndex()).getSeccionBachillerato().charAt(0);
+        String stringSeccion = ""; stringSeccion += seccion;
+        
+        int idGrupoTecnico = seccionesBachillerato.get(cbSeccionTecnica1.getSelectedIndex()).getIdGrupoTecnico();
+        int idEspecialidad = gradosTecnicos.get(cbTecnicos1.getSelectedIndex()).getIdEspecialidad();
+        
+        int idSeccion = SeccionesController.getSeccionesbyNameApiAsync(stringSeccion).join().getIdSeccion();
+        
+        
         if (txtNombres2.getText().isEmpty() || txtApellidos1.getText().isEmpty() || txtCodigo1.getText().isEmpty()) {
-            Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "Los campos no puede estar vacío");
-        }  else {
+            Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "Los campos no puede estar vacíos");
+        }
+        else if(GradosController.getGradoAcademico(idNivelAcademico, idSeccion, idSeccionBachillerato) == null){
+            Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "El grado académico no es válido");
+        }
+        else if (GradosController.getGradoTecnico(idEspecialidad, idGrupoTecnico) == null){
+            Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "El grado técnico no es válido");
+        }
+         else if(!Validaciones.checkName(txtNombres2.getText()) || !Validaciones.checkName(txtApellidos1.getText())){
+            Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "El nombre o apellido es invalido");
+        }
+        else if(!Validaciones.checkDateDown(dpNacimiento1.getDate().toInstant().atOffset(ZoneOffset.UTC))){
+            Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "La fecha de nacimiento no es válida");
+        }
+        else if(!Validaciones.onlyInts(txtCodigo1.getText())){
+            Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "El codigo solo debe tener números");
+        }
+        else if(!txtClave1.getText().isEmpty() && txtClave1.getText().length()<6){
+            Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "La contraseña debe ser de al menos 6 caracteres");
+        }
+        else {
             try {
                 enviarDatosHaciaApi();
             } catch (IOException ex) {
                 Logger.getLogger(MessageAddEstudiante.class.getName()).log(Level.SEVERE, null, ex);
             }
             Timer timer = new Timer(500, (ActionEvent e) -> {
-                Estudiantes cd = new Estudiantes();
 
-                cd.cargarDatos();
-                cd.deleteAllTableRows(cd.table1);
+                frm.cargarDatos();
+                frm.deleteAllTableRows(frm.table1);
             });
             timer.setRepeats(false);
             timer.start();

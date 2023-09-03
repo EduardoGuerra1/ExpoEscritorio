@@ -34,6 +34,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import raven.toast.Notifications;
 import Services.Validaciones;
+import View.Application.form.other.Credenciales;
 import View.Application.form.other.Estudiantes;
 import expoescritorio.Controller.EspecialidadesController;
 import expoescritorio.Controller.GradosController;
@@ -63,6 +64,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
+import java.time.ZoneOffset;
 import java.util.Date;
 
 /**
@@ -73,8 +75,9 @@ public class MessageAddPersonas extends javax.swing.JPanel {
     
     List<TiposPersonas> secciones = new ArrayList<TiposPersonas>();
     String rute = "";
+    Credenciales frm = null;
     
-    public MessageAddPersonas() {
+    public MessageAddPersonas(Credenciales frmCredenciales) {
 
         initComponents();
         setOpaque(false);
@@ -85,7 +88,7 @@ public class MessageAddPersonas extends javax.swing.JPanel {
                 + "font:$h4.font");
         // Obtener los datos de la API y cargarlos en el ComboBox
         
-        
+        this.frm = frmCredenciales;
         
         CompletableFuture<List<TiposPersonas>> seccionesFuture = 
                 TiposPersonasController.getTiposPersonasApiAsync();
@@ -267,9 +270,25 @@ public class MessageAddPersonas extends javax.swing.JPanel {
     private void btnAceptarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAceptarMouseClicked
         // TODO add your handling code here:
 
+        Boolean band1 = true, band2 = true;
+        
+        
         if (txtNombres.getText().isEmpty() || txtApellidos.getText().isEmpty() || txtCodigo.getText().isEmpty()) {
             Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "Los campos no puede estar vacío");
-        }  else {
+        }  
+        else if(!Validaciones.checkName(txtNombres.getText()) || !Validaciones.checkName(txtApellidos.getText())){
+            Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "El nombre o apellido es invalido");
+        }
+        else if(!Validaciones.checkDateDown(dpNacimiento.getDate().toInstant().atOffset(ZoneOffset.UTC))){
+            Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "La fecha de nacimiento no es válida");
+        }
+        else if(!Validaciones.onlyInts(txtCodigo.getText())){
+            Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "El codigo solo debe tener números");
+        }
+        else if(!txtClave.getText().isEmpty() && txtClave.getText().length()<6){
+            Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "La contraseña debe ser de al menos 6 caracteres");
+        }
+        else {
             try {
                 enviarDatosHaciaApi();
             } catch (IOException ex) {
@@ -354,7 +373,6 @@ public class MessageAddPersonas extends javax.swing.JPanel {
     }//GEN-LAST:event_btnAceptarActionPerformed
 
     public void eventOK(ActionListener event) {
-        btnAceptar.addActionListener(event);
     }
 
     private void enviarDatosHaciaApi() throws FileNotFoundException, IOException {
@@ -400,11 +418,10 @@ public class MessageAddPersonas extends javax.swing.JPanel {
                     // La solicitud POST fue exitosa
                     System.out.println("Datos enviados correctamente a la API");
 
-                    Estudiantes cd = new Estudiantes();
+                    frm.deleteAllTableRows(frm.table1);
+                    frm.cargarDatos();
 
-                    cd.cargarDatos();
-
-                    cd.deleteAllTableRows(cd.table1);
+                    
                     boolean pC = panelClosing() == true;
                     GlassPanePopup.closePopupLast();
 
@@ -485,9 +502,9 @@ public class MessageAddPersonas extends javax.swing.JPanel {
         // Realiza las acciones necesarias antes de cerrar el panel
         System.out.println("El panel se va a cerrar.");
         Estudiantes cd = new Estudiantes();
-
-        cd.cargarDatos();
-        cd.deleteAllTableRows(cd.table1);
+        frm.deleteAllTableRows(frm.table1);
+        frm.cargarDatos();
+        
         return false;
     }
 // Método para obtener el ID seleccionado de un JComboBox

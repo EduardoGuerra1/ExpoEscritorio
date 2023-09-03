@@ -60,7 +60,7 @@ public class MatriculasController {
     
     public static Matriculas getMatricula(int id){
         // URL base del servicio web para obtener información
-        String baseUrl = "https://expo2023-6f28ab340676.herokuapp.com/Grados/gradoAcademico";
+        String baseUrl = "https://expo2023-6f28ab340676.herokuapp.com/Matriculas/get/"+id;
         String url = baseUrl;
 
         try {

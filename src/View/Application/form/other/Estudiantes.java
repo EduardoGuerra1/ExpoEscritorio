@@ -203,7 +203,6 @@ public class Estudiantes extends javax.swing.JPanel {
         // Verificar si se ha seleccionado una fila
         if (selectedRow != -1) {
             // Obtener los datos de las columnas de la fila seleccionada
-            Object id = table1.getValueAt(selectedRow, 0);
 
             Message obj = new Message();
             obj.txtTitle.setText("Aviso");
@@ -211,24 +210,47 @@ public class Estudiantes extends javax.swing.JPanel {
             obj.eventOK(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent ae) {
-                    CompletableFuture<Boolean> deleteFuture = PersonasController.deleteCodigoPersona(id.toString());
+                    String url = "https://expo2023-6f28ab340676.herokuapp.com/Matriculas/delete";
+                    CompletableFuture<Boolean> deleteFuture = ControllerFull.DeleteApiAsync(url, allPersonas.get(selectedRow).getIdPersona());
 
                     // Manejar la respuesta de la API
                     deleteFuture.thenAccept(deleted -> {
                         if (deleted) {
                             // Registro eliminado con éxito
-                            Message obj = new Message();
-                            obj.txtTitle.setText("Aviso");
-                            obj.txtContent.setText("Persona eliminada exitosamente");
-                            obj.eventOK(new ActionListener() {
-                                @Override
-                                public void actionPerformed(ActionEvent ae) {
-                                    deleteAllTableRows(table1);
-                                    cargarDatos();
-                                    GlassPanePopup.closePopupLast();
+                            
+                            CompletableFuture<Boolean> deletePersona = PersonasController.deleteCodigoPersona(allPersonas.get(selectedRow).getCodigo());
+                            
+                            deletePersona.thenAccept(deleted1 -> {
+                                if(deleted1){
+                                    Message obj = new Message();
+                                    obj.txtTitle.setText("Aviso");
+                                    obj.txtContent.setText("Persona eliminada exitosamente");
+                                    obj.eventOK(new ActionListener() {
+                                     @Override
+                                        public void actionPerformed(ActionEvent ae) {
+                                            deleteAllTableRows(table1);
+                                            cargarDatos();
+                                            GlassPanePopup.closePopupLast();
+                                        }
+                                    });
+                                    GlassPanePopup.showPopup(obj);
+                                }
+                                else{
+                                    Message obj = new Message();
+                                    obj.txtTitle.setText("Aviso");
+                                    obj.txtContent.setText("Error al eliminar la persona, intente nuevamente.");
+                                    obj.eventOK(new ActionListener() {
+                                        @Override
+                                        public void actionPerformed(ActionEvent ae) {
+
+                                            GlassPanePopup.closePopupLast();
+                                        }
+                                    });
+                                    GlassPanePopup.showPopup(obj);
                                 }
                             });
-                            GlassPanePopup.showPopup(obj);
+                            
+                            
                         } else {
                             // Ocurrió un error al eliminar el registro
                             Message obj = new Message();
@@ -285,10 +307,10 @@ public class Estudiantes extends javax.swing.JPanel {
         }
         else{
             try{
-                MessageEditEstudiante obj = new MessageEditEstudiante(allPersonas.get(indx));
+                MessageEditEstudiante obj = new MessageEditEstudiante(allPersonas.get(indx),this);
                 
                 obj.txtTitle.setText("Actualizar Estudiante");
-                obj.eventOK(new ActionListener() {
+                /*obj.eventOK(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent ae) {
                         System.out.println("Click OK");
@@ -300,15 +322,15 @@ public class Estudiantes extends javax.swing.JPanel {
                         timer.setRepeats(false);
                         timer.start();
                     }
-                });
+                });*/
                 GlassPanePopup.showPopup(obj);
 
-                Timer timer = new Timer(2000, (ActionEvent e) -> {
+                /*Timer timer = new Timer(2000, (ActionEvent e) -> {
                     deleteAllTableRows(table1);
                     cargarDatos();
                 });
                 timer.setRepeats(false);
-                timer.start();
+                timer.start();*/
             }
             catch(Exception e){
                 System.out.println(e.getMessage());
@@ -383,13 +405,12 @@ public class Estudiantes extends javax.swing.JPanel {
 
     private void btnAddMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddMouseClicked
         // TODO add your handling code here:
-        MessageAddEstudiante obj = new MessageAddEstudiante();
+        MessageAddEstudiante obj = new MessageAddEstudiante(this);
         obj.txtTitle.setText("Añadir Estudiante");
-        obj.eventOK(new ActionListener() {
+        /*obj.eventOK(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 System.out.println("Click OK");
-                cargarDatos();
                 GlassPanePopup.closePopupLast();
                 Timer timer = new Timer(500, (ActionEvent e) -> {
                     deleteAllTableRows(table1);
@@ -398,15 +419,15 @@ public class Estudiantes extends javax.swing.JPanel {
                 timer.setRepeats(false);
                 timer.start();
             }
-        });
+        });*/
         GlassPanePopup.showPopup(obj);
 
-        Timer timer = new Timer(500, (ActionEvent e) -> {
+        /*Timer timer = new Timer(500, (ActionEvent e) -> {
             deleteAllTableRows(table1);
             cargarDatos();
         });
         timer.setRepeats(false);
-        timer.start();
+        timer.start();*/
 
     }//GEN-LAST:event_btnAddMouseClicked
 
