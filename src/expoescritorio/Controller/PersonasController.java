@@ -9,6 +9,7 @@ import View.glasspanepopup.GlassPanePopup;
 import View.samplemessage.Message;
 import com.google.gson.Gson;
 import expoescritorio.Models.CodigosConductuales;
+import expoescritorio.Models.Grados;
 import expoescritorio.Models.Personas;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -280,25 +281,25 @@ public class PersonasController {
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     
                     BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    JSONArray jsonArray = new JSONArray(reader.readLine());
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        int idPersona = jsonObject.getInt("idPersona");
-                        String codigo = jsonObject.getString("codigo");
-                        String nombre = jsonObject.getString("nombrePersona");
-                        String apellido = jsonObject.getString("apellidoPersona");
-                        String nacimiento = jsonObject.getString("nacimientoPersona");
-                        int idTipoPersona = jsonObject.getInt("idTipoPersona");
-                        String correo = jsonObject.getString("correo");
-                        String claveCredenciales = jsonObject.getString("claveCredenciales");
-                        byte[] foto = jsonObject.getString("foto").getBytes();
-                        
-                        return new Personas(idPersona, codigo, nombre, apellido, nacimiento, idTipoPersona, correo, claveCredenciales, foto);
+                    String inputLine;
+                    StringBuilder response = new StringBuilder();
+
+                    while ((inputLine = reader.readLine()) != null) {
+                        response.append(inputLine);
                     }
+
+                    reader.close();
+
+                    String responseData = response.toString();
+                    if (responseData != null) {
+                        Gson gson = new Gson();
+                        return gson.fromJson(responseData, Personas.class);
+                    }
+                    
                 }else {
                     System.out.println("La solicitud HTTP no fue exitosa. Código de estado: " + responseCode);
                 }
-            }catch (IOException | JSONException e) {
+            }catch (Exception e) {
                 System.out.println("Error al realizar la solicitud HTTP: " + e.getMessage());
             }finally {
                 if (connection != null) {

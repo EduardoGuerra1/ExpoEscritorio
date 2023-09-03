@@ -55,7 +55,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -124,7 +129,7 @@ public class MessageAddEstudiante extends javax.swing.JPanel {
             }
             
             for(SeccionesBachillerato grados : secciones){
-                cbSeccionTecnica.addItem(grados.getSeccionBachillerato());
+                cbSeccionAcademica.addItem(grados.getSeccionBachillerato());
             }
             
     }
@@ -329,7 +334,8 @@ public class MessageAddEstudiante extends javax.swing.JPanel {
         
         int idSeccion = SeccionesController.getSeccionesbyNameApiAsync(stringSeccion).join().getIdSeccion();
         
-        if (txtNombres.getText().isEmpty() || txtApellidos.getText().isEmpty() || txtCodigo.getText().isEmpty() || rute.isEmpty()) {
+        
+        if (txtNombres.getText().isEmpty() || txtApellidos.getText().isEmpty() || txtCodigo.getText().isEmpty()) {
             Notifications.getInstance().show(Notifications.Type.INFO, Notifications.Location.TOP_CENTER, "Los campos no puede estar vacío");
         }
         else if(GradosController.getGradoAcademico(idNivelAcademico, idSeccion, idSeccionBachillerato) == null){
@@ -432,11 +438,12 @@ public class MessageAddEstudiante extends javax.swing.JPanel {
             
             Personas estudiante = PersonasController.getPersonaByCodigo(txtCodigo.getText()).join();
             
+        
+            
             jsonData.put("idEstudiante", estudiante.getIdPersona());
             jsonData.put("idGradoAcademico", grado1.getIdGrado());
             jsonData.put("idGradoTecnico", grado2.getIdGrado());
-            jsonData.put("horario", 0x00000000);
-            
+            jsonData.put("horario", JSONObject.NULL);
             
             String endpointUrl = "https://expo2023-6f28ab340676.herokuapp.com/Matriculas/save"; // Reemplaza esto con la URL de tu API
             String jsonString = jsonData.toString();
@@ -493,22 +500,35 @@ public class MessageAddEstudiante extends javax.swing.JPanel {
         try{
             JSONObject jsonData = new JSONObject();
             
-            File imageFile = new File(rute);
-            FileInputStream fileInputStream = new FileInputStream(imageFile);
+            Path fotoPath;
+            byte[] imageBytes;
+            String base64Image="";
+            
+            if(rute==""){
+                
+            }
+            else{
+                fotoPath = Paths.get(rute);
+                // Read the image file and encode it to Base64
+                imageBytes = Files.readAllBytes(fotoPath);
+                base64Image = Base64.getEncoder().encodeToString(imageBytes);
+            }
 
-            // Read the image file and encode it to Base64
-            byte[] imageBytes = new byte[(int) imageFile.length()];
-            fileInputStream.read(imageBytes);
-            String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+            
+            Date selectedDate = dpNacimiento.getDate();
+            
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String formattedDate = dateFormat.format(selectedDate);
             
             jsonData.put("codigo", txtCodigo.getText());
             jsonData.put("nombrePersona", txtNombres.getText());
             jsonData.put("apellidoPersona", txtApellidos.getText());
-            jsonData.put("nacimientoPersona", dpNacimiento.getDate().toString());
+            jsonData.put("nacimientoPersona", formattedDate);
             jsonData.put("idTipoPersona", 2);
             jsonData.put("correo",txtCodigo.getText()+"@ricaldone.edu.sv");
             jsonData.put("claveCredenciales", Encriptacion.encryptPassword(txtClave.getText()));
-            jsonData.put("foto", base64Image);
+            if(rute.isEmpty()) jsonData.put("foto", JSONObject.NULL);
+            else jsonData.put("foto", base64Image);
             
             String endpointUrl = "https://expo2023-6f28ab340676.herokuapp.com/Credenciales/save"; // Reemplaza esto con la URL de tu API
             String jsonString = jsonData.toString();

@@ -37,6 +37,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -99,7 +102,7 @@ public class MessageEditEstudiante extends javax.swing.JPanel {
             jsonData.put("idEstudiante", modelEstudiante.getIdPersona());
             jsonData.put("idGradoAcademico", grado1.getIdGrado());
             jsonData.put("idGradoTecnico", grado2.getIdGrado());
-            jsonData.put("horario", 0x00000000);
+            jsonData.put("horario", JSONObject.NULL);
             
             
             String endpointUrl = "https://expo2023-6f28ab340676.herokuapp.com/Matriculas/update"; // Reemplaza esto con la URL de tu API
@@ -157,21 +160,19 @@ public class MessageEditEstudiante extends javax.swing.JPanel {
         try{
             JSONObject jsonData = new JSONObject();
             
-            File imageFile = null;
+             Path fotoPath;
+            byte[] imageBytes;
+            String base64Image="";
             
             if(rute==""){
-                imageFile = mImageFile;
+                base64Image = Base64.getEncoder().encodeToString(modelEstudiante.getFoto());
             }
-            else {
-                imageFile = new File(rute);
+            else{
+                fotoPath = Paths.get(rute);
+                // Read the image file and encode it to Base64
+                imageBytes = Files.readAllBytes(fotoPath);
+                base64Image = Base64.getEncoder().encodeToString(imageBytes);
             }
-            
-            /*FileInputStream fileInputStream = new FileInputStream(imageFile);
-
-            // Read the image file and encode it to Base64
-            byte[] imageBytes = new byte[(int) imageFile.length()];
-            fileInputStream.read(imageBytes);*/
-            String base64Image = Base64.getEncoder().encodeToString(modelEstudiante.getFoto());
      
             
             

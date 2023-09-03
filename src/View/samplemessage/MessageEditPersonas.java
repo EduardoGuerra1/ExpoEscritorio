@@ -33,6 +33,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -89,13 +92,18 @@ public class MessageEditPersonas extends javax.swing.JPanel {
         try{
             JSONObject jsonData = new JSONObject();
             
-            File imageFile = null;
+            Path fotoPath;
+            byte[] imageBytes;
+            String base64Image="";
             
             if(rute==""){
-                imageFile = mImageFile;
+                base64Image = Base64.getEncoder().encodeToString(modelEstudiante.getFoto());
             }
-            else {
-                imageFile = new File(rute);
+            else{
+                fotoPath = Paths.get(rute);
+                // Read the image file and encode it to Base64
+                imageBytes = Files.readAllBytes(fotoPath);
+                base64Image = Base64.getEncoder().encodeToString(imageBytes);
             }
             
             /*FileInputStream fileInputStream = new FileInputStream(imageFile);
@@ -103,7 +111,6 @@ public class MessageEditPersonas extends javax.swing.JPanel {
             // Read the image file and encode it to Base64
             byte[] imageBytes = new byte[(int) imageFile.length()];
             fileInputStream.read(imageBytes);*/
-            String base64Image = Base64.getEncoder().encodeToString(modelEstudiante.getFoto());
      
             
             
@@ -606,16 +613,16 @@ public class MessageEditPersonas extends javax.swing.JPanel {
         JFileChooser chooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG & PNG","jpg","png");
         chooser.setFileFilter(filter);
-
+        
         int res = chooser.showOpenDialog(this);
-
+        
         if(res == JFileChooser.APPROVE_OPTION){
             rute = chooser.getSelectedFile().getPath();
-
+            
             Image mImagen = new ImageIcon(rute).getImage();
-            ImageIcon mIcono = new ImageIcon(mImagen.getScaledInstance(lbImagen.getWidth(), lbImagen.getHeight(), Image.SCALE_SMOOTH));
-            lbImagen.setIcon(mIcono);
-
+            ImageIcon mIcono = new ImageIcon(mImagen.getScaledInstance(lbImagen1.getWidth(), lbImagen1.getHeight(), Image.SCALE_SMOOTH));
+            lbImagen1.setIcon(mIcono);
+            
         }
 
     }//GEN-LAST:event_btnImagenActionPerformed
@@ -702,8 +709,8 @@ public class MessageEditPersonas extends javax.swing.JPanel {
             rute = chooser.getSelectedFile().getPath();
 
             Image mImagen = new ImageIcon(rute).getImage();
-            ImageIcon mIcono = new ImageIcon(mImagen.getScaledInstance(lbImagen.getWidth(), lbImagen.getHeight(), Image.SCALE_SMOOTH));
-            lbImagen.setIcon(mIcono);
+            ImageIcon mIcono = new ImageIcon(mImagen.getScaledInstance(lbImagen1.getWidth(), lbImagen1.getHeight(), Image.SCALE_SMOOTH));
+            lbImagen1.setIcon(mIcono);
 
         }
 

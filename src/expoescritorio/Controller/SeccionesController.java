@@ -1,5 +1,7 @@
 package expoescritorio.Controller;
 
+import com.google.gson.Gson;
+import expoescritorio.Models.Grados;
 import expoescritorio.Models.Secciones;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -71,21 +73,25 @@ public class SeccionesController {
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     // Procesar la respuesta JSON del servidor.
                     BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    JSONArray jsonArray = new JSONArray(reader.readLine());
+                    String inputLine;
+                    StringBuilder response = new StringBuilder();
 
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        int idSeccion = jsonObject.getInt("idSeccion");
-                        String seccion = jsonObject.getString("seccion");
-                        Secciones newSeccion = new Secciones(idSeccion, seccion);
-                        return newSeccion;
+                    while ((inputLine = reader.readLine()) != null) {
+                        response.append(inputLine);
+                    }
+
+                    reader.close();
+
+                    String responseData = response.toString();
+                    if (responseData != null) {
+                        Gson gson = new Gson();
+                        return gson.fromJson(responseData, Secciones.class);
                     }
                 } else {
                     // Manejar errores si la respuesta del servidor no es exitosa.
                     System.out.println("La solicitud HTTP no fue exitosa. Código de estado: " + responseCode);
                 }
-            } catch (IOException | JSONException e) {
-                // Manejar excepciones si ocurren problemas durante la solicitud HTTP o el procesamiento JSON.
+            } catch (Exception e) {
                 System.out.println("Error al realizar la solicitud HTTP: " + e.getMessage());
             } finally {
                 if (connection != null) {

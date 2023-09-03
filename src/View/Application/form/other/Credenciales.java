@@ -129,6 +129,11 @@ public class Credenciales extends javax.swing.JPanel {
                 btnEditMouseClicked(evt);
             }
         });
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
 
         btnDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/View/icons/delete.png"))); // NOI18N
         btnDelete.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -366,6 +371,57 @@ public class Credenciales extends javax.swing.JPanel {
         timer.start();
         
     }//GEN-LAST:event_btnAddActionPerformed
+
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        // TODO add your handling code here:
+        
+        int indx = table1.getSelectedRow();
+        if(indx==-1){
+            Message obj = new Message();
+            obj.txtTitle.setText("Aviso");
+            obj.txtContent.setText("Debe seleccionar una fila.");
+            obj.eventOK(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    System.out.println("Click OK");
+                    GlassPanePopup.closePopupLast();
+                }
+            });
+            GlassPanePopup.showPopup(obj);
+        }
+        else{
+            try{
+                MessageEditPersonas obj = new MessageEditPersonas(myPersonas.get(indx));
+                
+                obj.txtTitle.setText("Actualizar Estudiante");
+                obj.eventOK(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                        System.out.println("Click OK");
+                        GlassPanePopup.closePopupLast();
+                        Timer timer = new Timer(2000, (ActionEvent e) -> {
+                            deleteAllTableRows(table1);
+                            cargarDatos();
+                        });
+                        timer.setRepeats(false);
+                        timer.start();
+                    }
+                });
+                GlassPanePopup.showPopup(obj);
+
+                Timer timer = new Timer(2000, (ActionEvent e) -> {
+                    deleteAllTableRows(table1);
+                    cargarDatos();
+                });
+                timer.setRepeats(false);
+                timer.start();
+            }
+            catch(Exception e){
+                System.out.println(e.getMessage());
+            }
+        }
+        
+    }//GEN-LAST:event_btnEditActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
