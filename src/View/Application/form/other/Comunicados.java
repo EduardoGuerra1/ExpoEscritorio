@@ -6,17 +6,23 @@ package View.Application.form.other;
 
 import View.glasspanepopup.GlassPanePopup;
 import View.samplemessage.Message;
+import View.samplemessage.MessageAddComunicados;
+import View.samplemessage.MessageAddPersonas;
+import View.samplemessage.MessageEditComunicados;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.FlatLaf;
 import expoescritorio.Controller.ControllerFull;
 import static expoescritorio.Controller.Funciones.GetComunicados;
 import static expoescritorio.Controller.Funciones.GetObservaciones;
+import expoescritorio.Controller.GradosController;
 import expoescritorio.Models.ComunicadosModel;
+import expoescritorio.Models.GradosView;
 import expoescritorio.Models.ObservacionesString;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import javax.swing.JTable;
@@ -31,6 +37,9 @@ public class Comunicados extends javax.swing.JPanel {
     /**
      * Creates new form Observaciones
      */
+    
+    List<ComunicadosModel> comunicados = new ArrayList<ComunicadosModel>();
+    
     public Comunicados() {
         
         initComponents();
@@ -51,29 +60,42 @@ public class Comunicados extends javax.swing.JPanel {
         lb.putClientProperty(FlatClientProperties.STYLE, ""
                 + "font:$h1.font");
         
+         DefaultTableModel tableModel = (DefaultTableModel) table1.getModel();
+            // Agregar las columnas al modelo de tabla
+         tableModel.addColumn("ID Comunicado");
+         tableModel.addColumn("Grado");
+         tableModel.addColumn("Fecha");
+         tableModel.addColumn("Titulo");
+        
         cargarDatos();
         
+    }
+    
+    private String getGrado(GradosView grado){
+        if(grado.getIdSeccionBachillerato() == "-") return grado.getIdNivelAcademico() + " " + grado.getIdGrupoTecnico() + " " + grado.getIdSeccion();
+        else return grado.getIdNivelAcademico() + " " + grado.getIdSeccionBachillerato();
     }
 
     public void cargarDatos(){
         CompletableFuture<List<ComunicadosModel>> futureObservaciones = GetComunicados();
         futureObservaciones.thenAccept(obsList -> {
             DefaultTableModel tableModel = (DefaultTableModel) table1.getModel();
-            // Agregar las columnas al modelo de tabla
-            tableModel.addColumn("ID Comunicado");
-            tableModel.addColumn("Grado");
-            tableModel.addColumn("Detalle");
-            tableModel.addColumn("Fecha");
+          
+            comunicados.clear();
 
             // Agregar los datos de Observaciones a la tabla
             for (ComunicadosModel observacion : obsList) {
+                
+                GradosView grado = GradosController.getGradoAcademico(observacion.getIdGrado());
+                
                 Object[] rowData = {
                         observacion.getIdComunicado(),
-                        observacion.getIdGrado(),
+                        getGrado(grado),
                         observacion.getDetalle(),
                         observacion.getFecha()
                 };
                 tableModel.addRow(rowData);
+                comunicados.add(observacion);
             }
         });
     }
@@ -112,6 +134,11 @@ public class Comunicados extends javax.swing.JPanel {
         btnEdit.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnEditMouseClicked(evt);
+            }
+        });
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
             }
         });
 
@@ -178,7 +205,9 @@ public class Comunicados extends javax.swing.JPanel {
 
     private void btnAddMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddMouseClicked
         // TODO add your handling code here:
-        
+        MessageAddComunicados obj = new MessageAddComunicados(this);
+        obj.txtTitle.setText("Añadir comunicado");
+        GlassPanePopup.showPopup(obj);
     }//GEN-LAST:event_btnAddMouseClicked
 
     private void btnEditMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEditMouseClicked
@@ -188,7 +217,9 @@ public class Comunicados extends javax.swing.JPanel {
 
         if (selectedRow != -1) {
             // Obtener los datos de las columnas de la fila seleccionada
-
+            MessageEditComunicados obj = new MessageEditComunicados(comunicados.get(table1.getSelectedRow()),this);
+            obj.txtTitle.setText("Editar comunicado");
+            GlassPanePopup.showPopup(obj);
            
         } else {
             Message obj = new Message();
@@ -230,7 +261,7 @@ public class Comunicados extends javax.swing.JPanel {
                 @Override
                 public void actionPerformed(ActionEvent ae) {
 
-                    String endpointUrl = "https://expo2023-6f28ab340676.herokuapp.com/Observaciones/delete";
+                    String endpointUrl = "https://expo2023-6f28ab340676.herokuapp.com/Comunicados/delete";
                     // Código para eliminar el registro de la API
                     CompletableFuture<Boolean> deleteFuture = ControllerFull.DeleteApiAsync(endpointUrl, (int) id);
 
@@ -285,6 +316,10 @@ public class Comunicados extends javax.swing.JPanel {
 
         }
     }//GEN-LAST:event_btnDeleteMouseClicked
+
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnEditActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

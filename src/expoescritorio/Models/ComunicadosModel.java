@@ -17,9 +17,9 @@ public class ComunicadosModel {
     int idGrado;
     String detalle;
     String fecha;
-    String archivo;
+    byte[] archivo;
     
-    public ComunicadosModel(int idComunicado, int idGrado, String detalle, String fecha, String archivo){
+    public ComunicadosModel(int idComunicado, int idGrado, String detalle, String fecha, byte[] archivo){
         this.idComunicado = idComunicado;
         this.idGrado = idGrado;
         this.detalle = detalle;

@@ -29,7 +29,7 @@ public class Menu extends JPanel {
         {"~Área Disciplinaria~"},
         {"Gestion Disciplinaria","Códigos","Tipos de Códigos","Estudiantes","Usuarios","Observaciones","Solicitudes Permisos","Asistencias/Inasistencias"},
         {"Avisos"},
-        {"Horarios "},
+        {"Pedagogía", "Grados", "Comunicados"},
         {"~Extras~"},
         {"Visitas Enfermeria"},
         {"Salones", "Reservar Salon", "Salones Reservados"},

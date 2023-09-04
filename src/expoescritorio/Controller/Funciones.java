@@ -50,7 +50,7 @@ public class Funciones {
                             int idPeriodo= jsonObject.getInt("idGrado");
                             String fecha= jsonObject.getString("fecha");
                             String detalle = jsonObject.getString("detalle");
-                            String idEstudiante= jsonObject.getString("archivo");
+                            byte[] idEstudiante= Base64.getDecoder().decode(jsonObject.getString("archivo")); 
                             modelList.add(new ComunicadosModel(idObservacion, idPeriodo,fecha,detalle, idEstudiante));
                         }
                     }else {

@@ -135,6 +135,50 @@ public class GradosController {
         return null; // Si hay algún problema, retorna null
     }
     
+    public static GradosView getGradoAcademico(int idGrado) {
+        
+        String baseUrl = "https://expo2023-6f28ab340676.herokuapp.com/Grados/get/"+idGrado;
+        // Parámetros de consulta a ser agregados a la URL.
+
+
+        try {
+            // Crea un objeto URL a partir de la URL completa.
+            URL urlObject = new URL(baseUrl);
+            // Abre una conexión HTTP.
+            HttpURLConnection connection = (HttpURLConnection) urlObject.openConnection();
+            connection.setRequestMethod("GET");
+
+            int responseCode = connection.getResponseCode();
+
+            if (responseCode == 200) {
+                // Lee la respuesta del servidor.
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String inputLine;
+                StringBuilder response = new StringBuilder();
+
+                while ((inputLine = reader.readLine()) != null) {
+                    response.append(inputLine);
+                }
+
+                reader.close();
+
+                String responseData = response.toString();
+                if (responseData != null) {
+                    Gson gson = new Gson();
+                    return gson.fromJson(responseData, GradosView.class);
+                }
+            } else {
+                // Maneja errores si la respuesta del servidor no es exitosa.
+                System.out.println("No se encontro: " + responseCode);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null; // Si hay algún problema, retorna null
+    }
+    
     /*public static CompletableFuture<List<GradosView>> getGradosApiAsync() {
         return CompletableFuture.supplyAsync(() -> {
             String apiUrl = "https://expo2023-6f28ab340676.herokuapp.com/Grados/list";

@@ -20,8 +20,10 @@ import View.Application.form.other.Asistencias;
 import View.Application.form.other.Avisos;
 import View.Application.form.other.PantallaInicio;
 import View.Application.form.other.CodigosDisciplinarios;
+import View.Application.form.other.Comunicados;
 import View.Application.form.other.Credenciales;
 import View.Application.form.other.Estudiantes;
+import View.Application.form.other.Grados;
 import View.Application.form.other.HorariosClases;
 import View.Application.form.other.Inasistencias;
 import View.Application.form.other.LlegadasTarde;
@@ -109,7 +111,15 @@ public class MainForm extends JLayeredPane {
             } else if (index == 2) {
                 Application.showForm(new Avisos());
             } else if (index == 3) {
-                Application.showForm(new RangoDeHoras());
+                if(subIndex == 1){
+                    Application.showForm(new Grados());
+                }
+                else if(subIndex == 2){
+                    Application.showForm(new Comunicados());
+                }
+                else{
+                    action.cancel();
+                }
             } else if (index == 4) {
                 Application.showForm(new VisitasEnfermeria());
             }else if (index == 5) {
